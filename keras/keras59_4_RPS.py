@@ -21,30 +21,36 @@ datagen_train = ImageDataGenerator(rescale=1./255,
                                                         rotation_range=5, 
                                                         zoom_range=1.2, 
                                                         shear_range=0.7, 
-                                                        fill_mode='nearest')
-datagen_test = ImageDataGenerator(rescale=1./255)
+                                                        fill_mode='nearest',
+                                                        validation_split=0.1)
+datagen_val = ImageDataGenerator(rescale=1./255,
+                                                                validation_split=0.1)
 
-xy_data = datagen_train.flow_from_directory('../_data/men_women', 
+xy_train = datagen_train.flow_from_directory('../_data/rps', 
                                                                 target_size=(150, 150),
-                                                                batch_size=3500,
-                                                                class_mode='binary')
-pred_data = datagen_test.flow_from_directory('../_data/men_women_pred', 
+                                                                batch_size=32,
+                                                                class_mode='categorical',
+                                                                subset='training')
+xy_val = datagen_val.flow_from_directory('../_data/rps',
                                                                 target_size=(150, 150),
-                                                                batch_size=3500,
-                                                                class_mode='binary')
+                                                                batch_size=32,
+                                                                class_mode='categorical',
+                                                                subset='validation')
 
-# Found 3309 images belonging to 2 classes.
-# Found 1 images belonging to 1 classes.
-# print(xy_data[0][0].shape, xy_data[0][1].shape) # (3309, 150, 150, 3) (3309,)
-# print(pred_data[0][0].shape)    # (1, 150, 150, 3)
+# Found 2520 images belonging to 3 classes.
+# print(xy_data[0][0].shape, xy_data[0][1].shape) # (2520, 150, 150, 3) (2520, 3)
 
-# np.save('./_save/_npy/MW_x.npy', arr=xy_data[0][0])
-# np.save('./_save/_npy/MW_y.npy', arr=xy_data[0][1])
+# np.save('./_save/_npy/rps_x.npy', arr=xy_data[0][0])
+# np.save('./_save/_npy/rps_y.npy', arr=xy_data[0][1])
 
-x = np.load('./_save/_npy/MW_x.npy')    # (3309, 150, 150, 3)
-y = np.load('./_save/_npy/MW_y.npy')    # (3309,)
+# x = np.load('./_save/_npy/rps_x.npy')    # (2520, 150, 150, 3)
+# y = np.load('./_save/_npy/rps_y.npy')    # (2520, 3)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=9)
+# print(np.unique(y)) 
+# y = to_categorical(y)
+# print(y.shape)
+
+# x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=9)
 
 #2. Modeling
 input = Input((150, 150, 3))
@@ -61,26 +67,27 @@ x = MaxPooling2D((2,2))(x)
 x = Flatten()(x)
 x = Dropout(0.2)(x)
 x = Dense(256, activation='relu')(x)
-output = Dense(1, activation='sigmoid')(x)
+output = Dense(3, activation='softmax')(x)
 
 model = Model(inputs=input, outputs=output)
 
 #3. Compiling, Training
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train, y_train, epochs=16, batch_size=16, verbose=1, validation_split=0.01)
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+hist = model.fit_generator(xy_train, epochs=16, verbose=1, validation_data=xy_val)
 
 #4. Evaluating, Prediction
-loss = model.evaluate(x_test, y_test)
-x_pred = pred_data[0][0]
-prediction = model.predict(x_pred)
-result = (1-prediction) * 100
+# loss = model.evaluate(x_test, y_test)
 
-print('loss = ', loss[0])
-print('acc = ', loss[1])
-print('남자일 확률 (%) = ', result)
+# print('loss = ', loss[0])
+# print('acc = ', loss[1])
+
+acc = hist.history['acc']
+val_acc = hist.history['val_acc']
+
+print('acc =', acc[-1])
+print('val_acc = ', val_acc[-1])
 
 '''
-loss =  0.6955399513244629
-acc =  0.6510574221611023
-남자일 확률 (%) =  [[69.98119]]
+acc = 0.7614638209342957
+val_acc =  0.9007936716079712
 '''

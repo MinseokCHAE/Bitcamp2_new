@@ -41,5 +41,9 @@ loss = hist.history['loss']
 val_loss = hist.history['val_loss']
 
 print('acc =', acc[-1])
-print('val_acc = ', val_acc[:-1])
+print('val_acc = ', val_acc[-1])
 
+'''
+acc = 0.643750011920929
+val_acc =  0.75
+'''
