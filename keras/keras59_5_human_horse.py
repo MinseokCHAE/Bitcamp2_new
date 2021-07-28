@@ -23,40 +23,32 @@ datagen_train = ImageDataGenerator(rescale=1./255,
                                                         shear_range=0.7, 
                                                         fill_mode='nearest',
                                                         validation_split=0.2)
-datagen_pred = ImageDataGenerator(rescale=1./255)
 
-xy_train = datagen_train.flow_from_directory('../_data/men_women', 
+xy_train = datagen_train.flow_from_directory('../_data/horse-or-human', 
                                                                 target_size=(150, 150),
                                                                 batch_size=3500,
                                                                 class_mode='binary',
                                                                 shuffle=True,
                                                                 subset='training')
-xy_val = datagen_train.flow_from_directory('../_data/men_women', 
+xy_val = datagen_train.flow_from_directory('../_data/horse-or-human', 
                                                                 target_size=(150, 150),
                                                                 batch_size=3500,
                                                                 class_mode='binary',
                                                                 shuffle=True,
                                                                 subset='validation')
-x_pred = datagen_pred.flow_from_directory('../_data/men_women_pred', 
-                                                                target_size=(150, 150),
-                                                                batch_size=3500,
-                                                                class_mode='binary')
 
-# Found 2648 images belonging to 2 classes.
-# Found 661 images belonging to 2 classes.
-# Found 1 images belonging to 1 classes.
+# Found 822 images belonging to 2 classes.
+# Found 205 images belonging to 2 classes.
 
-# np.save('./_save/_npy/MW_x_train.npy', arr=xy_train[0][0])
-# np.save('./_save/_npy/MW_y_train.npy', arr=xy_train[0][1])
-# np.save('./_save/_npy/MW_x_val.npy', arr=xy_val[0][0])
-# np.save('./_save/_npy/MW_y_val.npy', arr=xy_val[0][1])
-# np.save('./_save/_npy/MW_x_pred.npy', arr=x_pred[0][0])
+# np.save('./_save/_npy/HH_x_train.npy', arr=xy_train[0][0])
+# np.save('./_save/_npy/HH_y_train.npy', arr=xy_train[0][1])
+# np.save('./_save/_npy/HH_x_val.npy', arr=xy_val[0][0])
+# np.save('./_save/_npy/HH_y_val.npy', arr=xy_val[0][1])
 
-x_train = np.load('./_save/_npy/MW_x_train.npy')   
-y_train = np.load('./_save/_npy/MW_y_train.npy')    
-x_val = np.load('./_save/_npy/MW_x_val.npy')   
-y_val = np.load('./_save/_npy/MW_y_val.npy')
-x_pred = np.load('./_save/_npy/MW_x_pred.npy')
+x_train = np.load('./_save/_npy/HH_x_train.npy')   
+y_train = np.load('./_save/_npy/HH_y_train.npy')    
+x_val = np.load('./_save/_npy/HH_x_val.npy')   
+y_val = np.load('./_save/_npy/HH_y_val.npy')
 
 #2. Modeling
 input = Input((150, 150, 3))
@@ -84,17 +76,13 @@ hist = model.fit(x_train, y_train, epochs=16, batch_size=16, verbose=1, validati
 #4. Evaluating, Prediction
 loss = model.evaluate(x_val, y_val)
 val_acc = hist.history['val_acc']
-prediction = model.predict(x_pred)
-result = (1-prediction) * 100
 
 print('loss = ', loss[0])
 print('acc = ', loss[1])
 print('val_acc = ', val_acc[-1])
-print('남자일 확률 (%) = ', result)
 
 '''
-loss =  0.7983900904655457
-acc =  0.6414523720741272
-val_acc =  0.6792452931404114
-남자일 확률 (%) =  [[85.25112]]
+loss =  0.7132194638252258
+acc =  0.6829268336296082
+val_acc =  0.7647058963775635
 '''
