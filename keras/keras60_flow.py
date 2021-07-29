@@ -76,22 +76,25 @@ x_test = x_test.reshape(x_test.shape[0], 28,28,1)
 
 x_augmented = datagen_train.flow(
     x_augmented, np.zeros(augment_size),
-    batch_size=augment_size, shuffle=False).next()[0]
+    batch_size=augment_size, shuffle=False, 
+    save_to_dir='d:/bitcamp2/_temp/').next()[0]
 # print(x_augmented.shape)    # (40000, 28, 28, 1)
-
-x_train = np.concatenate((x_train, x_augmented))
+d
+x_train = np.concatenate((x_train, x_augmented)) # 4만장(augmented) + 6만장(기존 train)
 y_train = np.concatenate((y_train, y_augmented))
 # print(x_train.shape, y_train.shape) # (100000, 28, 28, 1) (100000,)
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 '''
 import matplotlib.pyplot as plt
-plt.figure(figsize=(7,7))
-for i in range(9):
-    plt.subplot(2,10,i+1)
+plt.figure(figsize=(10, 2))
+for i in range(20):
+    plt.subplot(2, 10, i+1)
     plt.axis('off')
-    plt.imshow(x_train[i], cmap='gray')
-    plt.imshow(x_augmented[i], cmap='gray')
+    if i < 10:
+        plt.imshow(x_train[i], cmap='gray')
+    else:
+        plt.imshow(x_augmented[i-10], cmap='gray')
 plt.show()
 '''
 #2. Modeling
