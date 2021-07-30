@@ -14,6 +14,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 #1. Data Preprocessing
 # read_sql
 path = sqlite3.connect('../_data/soccer_prediction/database.sqlite')   # 데이터파일 경로설정
-df_players = pd.read_sql_query('SELECT * FROM Player', path)
-df_stats = pd.read_sql_query('SELECT * FROM Player_Attributes', path)
+player = pd.read_sql_query('SELECT * FROM Player', path)
+player_attributes = pd.read_sql_query('SELECT * FROM Player_Attributes', path)
+
 
