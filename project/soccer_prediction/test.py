@@ -15,12 +15,13 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 #1. Data Preprocessing
 
 #1-1. 데이터 추출 및 정보확인
+
 #   1) read_sql
 path = sqlite3.connect('../_data/soccer_prediction/database.sqlite')   # 데이터베이스 경로설정
 player = pd.read_sql_query('SELECT * FROM Player', path) # SELECT 구문 이용 필요 데이터셋 추출 (Player, Player_Attributes)
 player_attributes = pd.read_sql_query('SELECT * FROM Player_Attributes', path)
 
-#   2) null 값 drop
+#   2) null 값 dropping
 player = player.dropna(axis=0) 
 player_attributes = player_attributes.dropna(axis=0)
 
@@ -54,7 +55,48 @@ player_attributes = player_attributes.dropna(axis=0)
 # 4   5              218353         505942  ...        9.0             7.0          7.0
 # [183978 rows x 42 columns]
 
-#1-2. column 정리
+#1-2. merging ( player + player_attributes )
+
+#   player dataset: 11060명의 선수 기본 정보 
+#   player_attributes dataset: 각 선수 세부 스탯 시즌별로(date) 나열
+#   동일 player_api_id 데이터(= 동일 선수 시즌별 데이터)를 평균값으로 단일화 시킨후 player dataset 에 추가(단일 dataset으로 통일)
+#   평균값 계산을 위해 일부 데이터 수치화 필요 ( preferred_foot, attacking_work_rate, defensive_work_rate )
+
+#   1) binary encoding ( preferred_foot )
+player_attributes['preferred_foot'] = player_attributes['preferred_foot'].replace({'left':0, 'right':1}) # 주발
+'''print(player_attributes['preferred_foot'].head())'''
+# 0    1
+# 1    1
+# 2    1
+# 3    1
+# 4    1
+
+#   2) get_dummies ( attacking_work_rate, defensive_work_rate )
+#   [참고1] https://stackoverflow.com/questions/58101126/using-scikit-learn-onehotencoder-with-a-pandas-dataframe
+#   [참고2] https://pandas.pydata.org/pandas-docs/version/0.17.0/generated/pandas.get_dummies.html
+#   'Series' object has no attribute 'to_categorical'  : pandas_series는 to_categorical 또는 onehotencode 적용불가
+player_attributes['attacking_work_rate'] = pd.get_dummies(
+    player_attributes['attacking_work_rate'], 
+    prefix=['attacking_work_rate'], 
+    columns=['attacking_work_rate'], drop_first=True)
+'''print(player_attributes['attacking_work_rate'].head(10))'''
+# 0    0
+# 1    0
+# 2    0
+# 3    0
+# 4    0
+# 5    1
+# 6    1
+# 7    1
+# 8    1
+# 9    1
+
+# onehotencode쓰는방법추가
+
+#   3) 합치는거
+
+
+#1-3. column 정리
 
 #   1) 불필요한 column drop ( id, player_name, player_fifa_api_id, date )
 player = player.drop(['id', 'player_name', 'player_fifa_api_id'], axis=1)
@@ -70,11 +112,12 @@ player['birthday'] = pd.to_datetime(player['birthday']) # apply() 적용을 위�
 # #   Column         Non-Null Count  Dtype
 #  1   birthday       non-null 11060  datetime64[ns]
 player['birth_year'] = player['birthday'].apply(lambda x:x.year) # 출생년도만 추출
-player = player.drop('birthday', axis=1) # 기존 birthday column drop
-'''print(player['birth_year'].head(5)) # result check'''
+'''print(player['birth_year'].head(5))'''
 # 0        1992
 # 1        1989
 # 2        1991
 # 3        1982
 # 4        1979
+player = player.drop('birthday', axis=1) # 기존 birthday column drop
 
+#1-4. 
