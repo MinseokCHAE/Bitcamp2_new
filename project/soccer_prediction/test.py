@@ -96,7 +96,7 @@ player_attributes['attacking_work_rate'] = pd.get_dummies(
 #   3) 합치는거
 
 
-#1-3. column 정리
+#1-3. column 정리 -> merging할때 먼저해줘야함
 
 #   1) 불필요한 column drop ( id, player_name, player_fifa_api_id, date )
 player = player.drop(['id', 'player_name', 'player_fifa_api_id'], axis=1)
