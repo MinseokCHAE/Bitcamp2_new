@@ -11,7 +11,7 @@ from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.layers import Dense, Input, Flatten, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 
-    # 3) 전처리 데이터 npy저장 및 로드
+    # 4) 전처리 데이터 npy저장 및 로드
 # np.save('./_save/_npy/SP_x.npy', arr=x)
 # np.save('./_save/_npy/SP_y.npy', arr=y)
 # np.save('./_save/_npy/SP_x_pred.npy', arr=x_pred)
@@ -19,7 +19,7 @@ x = np.load('./_save/_npy/SP_x.npy')
 y = np.load('./_save/_npy/SP_y.npy')
 x_pred = np.load('./_save/_npy/SP_x_pred.npy')
 
-    # 4) train_test_split
+    # 5) train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, shuffle=True, random_state=9)
 
 #2. Modeling

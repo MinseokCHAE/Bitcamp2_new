@@ -216,7 +216,7 @@ player_merged.rename(columns={'birthday': 'birthyear'}, inplace=True) # column�
     # 2) 불필요한 column drop ( id, player_api_id, player_name, player_fifa_api_id )
 player_merged = player_merged.drop(['id', 'player_api_id', 'player_name', 'player_fifa_api_id'], axis=1)
 
-#1-4. 마무리 전처리 작업
+#1-4. 기타 작업
 
     # 1) 예측할 데이터 불러오기
     # [출처] https://sofifa.com/player/191740/ander-herrera-aguera/?attr=classic
@@ -256,7 +256,7 @@ x_pred = np.concatenate((x1_pred, x2_pred, x3_pred), axis=1)
 '''print(x.shape, x_pred.shape)'''
 # (10410, 40) (1, 40)
 
-    # 3) 전처리 데이터 npy저장 및 로드
+    # 4) 전처리 데이터 npy저장 및 로드
 # np.save('./_save/_npy/SP_x.npy', arr=x)
 # np.save('./_save/_npy/SP_y.npy', arr=y)
 # np.save('./_save/_npy/SP_x_pred.npy', arr=x_pred)
