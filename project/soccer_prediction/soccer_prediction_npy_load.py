@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, LabelBinarizer, MinMaxScaler, StandardScaler
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_squared_error
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Model, load_model
@@ -28,6 +29,7 @@ d = Dense(1024, activation='relu')(input)
 d = Dropout(0.2)(d)
 output = Dense(1, activation='relu')(d)
 model = Model(inputs=input, outputs=output)
+# model = RandomForestRegressor()
 
 #3. Compiling, Training
 model.compile(loss='mse', optimizer='adam')
@@ -42,6 +44,7 @@ es = EarlyStopping(monitor='val_loss', restore_best_weights=False, mode='auto', 
 
 start_time = time.time()
 model.fit(x_train, y_train, epochs=21, batch_size=4, verbose=1, validation_split=0.01, callbacks=[es, cp])
+# model.fit(x_train, y_train)
 end_time = time.time() - start_time
 
 #4. Evaluating, Prediction
@@ -58,6 +61,13 @@ print('Performance Prediction = ', prediction)
 loss =  0.6200321912765503
 r2 score = 0.9581711507656665
 Performance Prediction =  [[84.11376]]
+
+RandomForestRegressor
+r2 score = 0.9451363556335565
+Performance Prediction =  [82.08301616]
+
+
+
 '''
 
 
