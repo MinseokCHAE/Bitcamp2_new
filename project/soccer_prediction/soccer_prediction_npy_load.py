@@ -21,15 +21,15 @@ y = np.load('./_save/_npy/SP_y.npy')
 x_pred = np.load('./_save/_npy/SP_x_pred.npy')
 
     # 5) train_test_split
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, shuffle=True, random_state=9)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, shuffle=True, random_state=21)
 
 #2. Modeling
 input = Input((40,))
-d = Dense(1024, activation='relu')(input)
-d = Dropout(0.2)(d)
+d = Dense(512, activation='relu')(input)
+d = Dense(256, activation='relu')(d)
 output = Dense(1, activation='relu')(d)
 model = Model(inputs=input, outputs=output)
-# model = RandomForestRegressor()
+# model = RandomForestRegressor() 
 
 #3. Compiling, Training
 model.compile(loss='mse', optimizer='adam')
@@ -43,8 +43,8 @@ cp = ModelCheckpoint(monitor='val_loss', save_best_only=True, mode='auto', verbo
 es = EarlyStopping(monitor='val_loss', restore_best_weights=False, mode='auto', verbose=1, patience=10)
 
 start_time = time.time()
-model.fit(x_train, y_train, epochs=21, batch_size=4, verbose=1, validation_split=0.01, callbacks=[es, cp])
-# model.fit(x_train, y_train)
+model.fit(x_train, y_train, epochs=100, batch_size=8, verbose=1, validation_split=0.1, callbacks=[es, cp])
+# model.fit(x_train, y_train) # RandomForestRegressor
 end_time = time.time() - start_time
 
 #4. Evaluating, Prediction
@@ -58,16 +58,11 @@ print('r2 score =', r2)
 print('Performance Prediction = ', prediction)
 
 '''
-loss =  0.6200321912765503
-r2 score = 0.9581711507656665
-Performance Prediction =  [[84.11376]]
+loss =  0.9929283857345581
+r2 score = 0.9737266283123291
+Performance Prediction =  [[84.824684]]
 
 RandomForestRegressor
 r2 score = 0.9451363556335565
 Performance Prediction =  [82.08301616]
-
-
-
 '''
-
-
