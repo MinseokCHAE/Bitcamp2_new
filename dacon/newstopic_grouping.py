@@ -74,14 +74,12 @@ y = to_categorical(y)
 # print(np.unique(y)) # 0, 1
 
 # x, y train_test_split -> Stratified KFold는 생략
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=21)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=21)
 
 #2. Modeling
 input = Input((14, ))
-d = Embedding(101082, 512)(input)
-d = Dropout(0.7)(d)
-d =Bidirectional(LSTM(256, activation='relu', return_sequences=False))(d)
-d = Dropout(0.7)(d)
+d = Embedding(101082, 1024)(input)
+d =Bidirectional(LSTM(512, activation='relu', return_sequences=False))(d)
 output = Dense(7, activation='softmax')(d)
 model = Model(inputs=input, outputs=output)
 # model = RandomForestRegressor()
@@ -98,7 +96,7 @@ cp = ModelCheckpoint(monitor='val_loss', save_best_only=True, mode='auto', verbo
 es = EarlyStopping(monitor='val_loss', restore_best_weights=False, mode='auto', verbose=1, patience=10)
 
 start_time = time.time()
-model.fit(x_train, y_train, epochs=100, batch_size=128, verbose=1, validation_split=0.1, callbacks=[es, cp])
+model.fit(x_train, y_train, epochs=100, batch_size=256, verbose=1, validation_split=0.1, callbacks=[es, cp])
 #Stratified KFold 적용
 # new_tech = StratifiedKFold(n_splits=5, shuffle=True, random_state=21)
 # for i, (i_train, i_val) in enumerate(new_tech.split(x, y), 1):
