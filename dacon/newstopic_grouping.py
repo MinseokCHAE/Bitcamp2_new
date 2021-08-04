@@ -78,14 +78,11 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_
 
 #2. Modeling
 input = Input((14, ))
-e = Embedding(101082, 256)(input)
-b1 =Bidirectional(LSTM(64, activation='relu', return_sequences=True))(e)
-o1 = Dropout(0.2)(b1)
-b2 =Bidirectional(LSTM(64, activation='relu', return_sequences=True))(o1)
-o2 = Dropout(0.2)(b2)
-b3 =Bidirectional(LSTM(64, activation='relu', return_sequences=False))(o2)
-o3 = Dropout(0.2)(b3)
-output = Dense(7, activation='softmax')(o3)
+d = Embedding(101082, 512)(input)
+d = Dropout(0.7)(d)
+d =Bidirectional(LSTM(256, activation='relu', return_sequences=False))(d)
+d = Dropout(0.7)(d)
+output = Dense(7, activation='softmax')(d)
 model = Model(inputs=input, outputs=output)
 # model = RandomForestRegressor()
 
@@ -95,13 +92,13 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc']
 date = datetime.datetime.now()
 date_time = date.strftime('%m%d_%H%M')
 path = './_save/_mcp/dacon/newstopic_grouping/'
-info = '{epoch:02d}_{val_acc:.4f}'
+info = '{acc:.4f}'
 filepath = ''.join([path, date_time, '_', info, '.hdf5'])
-es = EarlyStopping(monitor='val_loss', restore_best_weights=True, mode='auto', verbose=1, patience=4)
 cp = ModelCheckpoint(monitor='val_loss', save_best_only=True, mode='auto', verbose=1, filepath=filepath)
+es = EarlyStopping(monitor='val_loss', restore_best_weights=False, mode='auto', verbose=1, patience=10)
 
 start_time = time.time()
-model.fit(x_train, y_train, epochs=8, batch_size=512, verbose=1, validation_split=0.1, callbacks=[es, cp])
+model.fit(x_train, y_train, epochs=100, batch_size=128, verbose=1, validation_split=0.1, callbacks=[es, cp])
 #Stratified KFold 적용
 # new_tech = StratifiedKFold(n_splits=5, shuffle=True, random_state=21)
 # for i, (i_train, i_val) in enumerate(new_tech.split(x, y), 1):
@@ -121,12 +118,9 @@ print('acc = ', loss[1])
 print('time taken(s) = ', end_time)
 
 '''
-Epoch 00003: val_loss did not improve from 0.00268
-Epoch 4/4
-72/72 [==============================] - 30s 412ms/step - loss: 0.0105 - acc: 0.9978 - val_loss: 0.0169 - val_acc: 0.9958
-
-Epoch 00004: val_loss did not improve from 0.00268
-time taken(s) =  571.4971168041229
+loss =  0.6646511554718018
+acc =  0.7809009552001953
+time taken(s) =  557.3833088874817
 '''
 
 #5. Prediction
