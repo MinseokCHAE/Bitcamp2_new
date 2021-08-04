@@ -13,8 +13,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 #1. Data Preprocessing
 # read_csv
-datasets_sk = pd.read_csv('../_data/SK주가 20210721.csv', header=0, usecols=[1,2,3,4,10], nrows=2602, encoding='EUC-KR')
-datasets_samsung = pd.read_csv('../_data/삼성전자 주가 20210721.csv', header=0, usecols=[1,2,3,4,10], nrows=2602, encoding='EUC-KR')
+datasets_sk = pd.read_csv('../_data/project/samsung_stock/SK주가 20210721.csv', header=0, usecols=[1,2,3,4,10], nrows=2602, encoding='EUC-KR')
+datasets_samsung = pd.read_csv('../_data/project/samsung_stock/삼성전자 주가 20210721.csv', header=0, usecols=[1,2,3,4,10], nrows=2602, encoding='EUC-KR')
 
 # 역순정렬 및 null값 제거
 datasets_sk = datasets_sk[::-1]
@@ -103,7 +103,7 @@ model.compile(loss='mse', optimizer='adam')
 
 date = datetime.datetime.now()
 date_time = date.strftime('%m%d_%H%M')
-path = './_save/_mcp/'
+path = './_save/_mcp/project/samsung_prediction'
 info = '{epoch:02d}_{val_loss:.4f}'
 filepath = ''.join([path, 'CMS1_12345', '_', date_time, '_', info, '.hdf5'])
 cp = ModelCheckpoint(monitor='val_loss', save_best_only=True, mode='auto', verbose=1, filepath=filepath)
