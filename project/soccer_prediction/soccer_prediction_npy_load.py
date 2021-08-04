@@ -13,12 +13,12 @@ from tensorflow.keras.layers import Dense, Input, Flatten, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 
     # 4) 전처리 데이터 npy저장 및 로드
-# np.save('./_save/_npy/SP_x.npy', arr=x)
-# np.save('./_save/_npy/SP_y.npy', arr=y)
-# np.save('./_save/_npy/SP_x_pred.npy', arr=x_pred)
-x = np.load('./_save/_npy/SP_x.npy')
-y = np.load('./_save/_npy/SP_y.npy')
-x_pred = np.load('./_save/_npy/SP_x_pred.npy')
+# np.save('./_save/_npy/project/soccer_prediction/SP_x.npy', arr=x)
+# np.save('./_save/_npy/project/soccer_prediction/SP_y.npy', arr=y)
+# np.save('./_save/_npy/project/soccer_prediction/SP_x_pred.npy', arr=x_pred)
+x = np.load('./_save/_npy/project/soccer_prediction/SP_x.npy')
+y = np.load('./_save/_npy/project/soccer_prediction/SP_y.npy')
+x_pred = np.load('./_save/_npy/project/soccer_prediction/SP_x_pred.npy')
 
     # 5) train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, shuffle=True, random_state=21)
@@ -36,7 +36,7 @@ model.compile(loss='mse', optimizer='adam')
 
 date = datetime.datetime.now()
 date_time = date.strftime('%m%d_%H%M')
-path = './_save/_mcp/'
+path = './_save/_mcp/project/soccer_prediction/'
 info = '{epoch:02d}_{val_loss:.4f}'
 filepath = ''.join([path, 'SP', '_', date_time, '_', info, '.hdf5'])
 cp = ModelCheckpoint(monitor='val_loss', save_best_only=True, mode='auto', verbose=1, filepath=filepath)

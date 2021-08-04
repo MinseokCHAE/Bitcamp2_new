@@ -18,7 +18,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoa
 
     # 1) read_sql
     # [참고] https://www.w3schools.com/sql/sql_select.asp
-path = sqlite3.connect('../_data/soccer_prediction/database.sqlite')   # 데이터베이스 경로설정
+path = sqlite3.connect('../_data/project/soccer_prediction/database.sqlite')   # 데이터베이스 경로설정
 player = pd.read_sql_query('SELECT * FROM Player', path) # SELECT 구문 이용 필요 데이터셋 추출 (Player, Player_Attributes)
 player_attributes = pd.read_sql_query('SELECT * FROM Player_Attributes', path)
 
@@ -221,7 +221,7 @@ player_merged = player_merged.drop(['id', 'player_api_id', 'player_name', 'playe
     # 1) 예측할 데이터 불러오기
     # [출처] https://sofifa.com/player/191740/ander-herrera-aguera/?attr=classic
     # 엑셀로 수치입력후 csv파일로 변환
-x_pred = pd.read_csv('../_data/soccer_prediction/Ander_Herrera.csv', header=0) 
+x_pred = pd.read_csv('../_data/project/soccer_prediction/Ander_Herrera.csv', header=0) 
 '''print(x_pred.shape)'''
 # (1, 41)
 
@@ -257,9 +257,9 @@ x_pred = np.concatenate((x1_pred, x2_pred, x3_pred), axis=1)
 # (10410, 40) (1, 40)
 
     # 4) 전처리 데이터 npy저장 및 로드
-# np.save('./_save/_npy/SP_x.npy', arr=x)
-# np.save('./_save/_npy/SP_y.npy', arr=y)
-# np.save('./_save/_npy/SP_x_pred.npy', arr=x_pred)
-x = np.load('./_save/_npy/SP_x.npy')
-y = np.load('./_save/_npy/SP_y.npy')
-x_pred = np.load('./_save/_npy/SP_x_pred.npy')
+# np.save('./_save/_npy/project/soccer_prediction/SP_x.npy', arr=x)
+# np.save('./_save/_npy/project/soccer_prediction/SP_y.npy', arr=y)
+# np.save('./_save/_npy/project/soccer_prediction/SP_x_pred.npy', arr=x_pred)
+x = np.load('./_save/_npy/project/soccer_prediction/SP_x.npy')
+y = np.load('./_save/_npy/project/soccer_prediction/SP_y.npy')
+x_pred = np.load('./_save/_npy/project/soccer_prediction/SP_x_pred.npy')
