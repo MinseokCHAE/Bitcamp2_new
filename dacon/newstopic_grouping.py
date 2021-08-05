@@ -78,7 +78,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
 #2. Modeling
 input = Input((14, ))
-d = Embedding(101082, 512)(input)
+d = Embedding(101082, 256)(input)
 d =Bidirectional(LSTM(256, activation='relu', return_sequences=False))(d)
 output = Dense(7, activation='softmax')(d)
 model = Model(inputs=input, outputs=output)
