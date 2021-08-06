@@ -78,10 +78,10 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
 #2. Modeling
 input = Input((14, ))
-d = Embedding(101082, 512)(input)
-d = LSTM(256, return_sequences=True, activation='relu')(d)
+d = Embedding(101082, 256)(input)
+d = LSTM(128, return_sequences=True, activation='relu')(d)
 d = Dropout(0.2)(d)
-d = Conv1D(256, 2, activation='relu')(d)
+d = Conv1D(128, 2, activation='relu')(d)
 d = Flatten()(d)
 output = Dense(7, activation='softmax')(d)
 model = Model(inputs=input, outputs=output)
