@@ -10,7 +10,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.layers import Input, Embedding, Dense, LSTM, GRU, Dropout, Bidirectional
+from tensorflow.keras.layers import Input, Embedding, Dense, LSTM, GRU, Dropout, Bidirectional, Conv1D, MaxPooling1D, Flatten
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 
@@ -78,8 +78,11 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
 #2. Modeling
 input = Input((14, ))
-d = Embedding(101082, 256)(input)
-d =Bidirectional(LSTM(256, activation='relu', return_sequences=False))(d)
+d = Embedding(101082, 512)(input)
+d = LSTM(256, return_sequences=True, activation='relu')(d)
+d = Dropout(0.2)(d)
+d = Conv1D(256, 2, activation='relu')(d)
+d = Flatten()(d)
 output = Dense(7, activation='softmax')(d)
 model = Model(inputs=input, outputs=output)
 # model = RandomForestRegressor()
@@ -90,10 +93,10 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc']
 date = datetime.datetime.now()
 date_time = date.strftime('%m%d_%H%M')
 path = './_save/_mcp/dacon/newstopic_grouping/'
-info = '{acc:.4f}'
+info = '{val_acc:.4f}'
 filepath = ''.join([path, date_time, '_', info, '.hdf5'])
-cp = ModelCheckpoint(monitor='val_loss', save_best_only=True, mode='auto', verbose=1, filepath=filepath)
-es = EarlyStopping(monitor='val_loss', restore_best_weights=False, mode='auto', verbose=1, patience=10)
+cp = ModelCheckpoint(monitor='val_acc', save_best_only=True, mode='max', verbose=1, filepath=filepath)
+es = EarlyStopping(monitor='val_acc', restore_best_weights=False, mode='max', verbose=1, patience=10)
 
 start_time = time.time()
 model.fit(x_train, y_train, epochs=100, batch_size=512, verbose=1, validation_split=0.1, callbacks=[es, cp])
