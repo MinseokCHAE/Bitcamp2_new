@@ -6,7 +6,7 @@ from numpy import argmax
 import pandas as pd
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, QuantileTransformer, OneHotEncoder
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -35,11 +35,11 @@ datasets_train['title'] = datasets_train['title'].apply(lambda x : text_cleaning
 datasets_test['title'] = datasets_test['title'].apply(lambda x : text_cleaning(x))
 
 # x, y, x_pred 분류 
-# x = datasets_train.iloc[:, -2]
-# x_pred = datasets_test.iloc[:, -1]
-# y = datasets_train.iloc[:, -1]
+x = datasets_train.iloc[:, -2]
+x_pred = datasets_test.iloc[:, -1]
+y = datasets_train.iloc[:, -1]
 # print(x.head(), y.head(), x_pred.head())
-
+'''
 # word2vec 사용
 x_list = list(datasets_train['title'])
 x_pred_list = list(datasets_test['title'])
@@ -87,20 +87,20 @@ x = get_dataset(x, model_x, num_features)
 x_pred = get_dataset(x_pred, model_x_pred, num_features)
 
 print(x.shape, x_pred.shape)
-
 '''
+
 # x, x_pred 토큰화 및 sequence화
 # token = Tokenizer()
 # token.fit_on_texts(x)
 # x = token.texts_to_sequences(x)
 # x_pred = token.texts_to_sequences(x_pred)
 vector = TfidfVectorizer(min_df=0.0, analyzer='char', sublinear_tf=True, ngram_range=(1, 3), max_features=5000)
+# count = CountVectorizer(analyzer='word', max_features=5000)
 vector.fit(x)
 x = vector.transform(x)
 x_pred = vector.transform(x_pred)
 x = x.toarray()
 x_pred = x_pred.toarray()
-# print(x, x_pred)
 
 # x, x_pred padding
 # max_len1 = max(len(i) for i in x)
@@ -111,10 +111,10 @@ x_pred = x_pred.toarray()
 # print(avg_len1, avg_len2) # 6.883098961755816 5.913152995290767
 # x = pad_sequences(x, padding='pre', maxlen=13)
 # x_pred = pad_sequences(x_pred, padding='pre', maxlen=13)
-print(x.shape, x_pred.shape) # (45654, 13) (9131, 13) //  (45654, 5000) (9131, 5000)
+print(x.shape, x_pred.shape) # (45654, 13) (9131, 13) //  (45654, 5000) (9131, 5000) // (45654, 5000) (9131, 5000)
 # print(np.unique(x), np.unique(x_pred)) # 0~76528
-'''
+
 # 전처리 데이터 npy저장
-# np.save('./_save/_npy/dacon/newstopic_grouping/NTG_x_vector.npy', arr=x)
-# np.save('./_save/_npy/dacon/newstopic_grouping/NTG_y_vector.npy', arr=y)
-# np.save('./_save/_npy/dacon/newstopic_grouping/NTG_x_pred_vector.npy', arr=x_pred)
+np.save('./_save/_npy/dacon/newstopic_grouping/NTG_x_vector.npy', arr=x)
+np.save('./_save/_npy/dacon/newstopic_grouping/NTG_y_vector.npy', arr=y)
+np.save('./_save/_npy/dacon/newstopic_grouping/NTG_x_pred_vector.npy', arr=x_pred)

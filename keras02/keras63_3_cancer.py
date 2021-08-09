@@ -41,7 +41,7 @@ model = Model(inputs=input, outputs=output)
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 optimizer = Adam(learning_rate=0.001)
-reduce_lr = ReduceLROnPlateau(monitor='val_acc', patience=10, mode='max', verbose=1, factor=0.5)
+reduce_lr = ReduceLROnPlateau(monitor='val_acc', patience=5, mode='max', verbose=1, factor=0.5)
 es = EarlyStopping(monitor='val_acc', patience=32, mode='max', verbose=1)
 model.compile(loss='binary_crossentropy', optimizer='adam', 
                         metrics=['acc'])

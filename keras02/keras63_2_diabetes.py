@@ -42,7 +42,7 @@ model = Model(inputs=input, outputs=output)
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 optimizer = Adam(learning_rate=0.001)
-reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=10, mode='min', verbose=1, factor=0.5)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=5, mode='min', verbose=1, factor=0.5)
 es = EarlyStopping(monitor='val_loss', patience=32, mode='min', verbose=1)
 model.compile(loss='mse', optimizer='adam')
 start_time = time.time()
