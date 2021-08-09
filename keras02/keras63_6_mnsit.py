@@ -1,24 +1,24 @@
-import numpy as np
 import time
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, QuantileTransformer, OneHotEncoder
-from tensorflow.keras.datasets import cifar100
+from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, Conv2D, Flatten, MaxPooling2D
+from tensorflow.keras.layers import Dense, Input, Conv2D, Flatten, MaxPooling2D, GlobalAvgPool2D, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.utils import to_categorical
 
-#1. data preprocessing
-(x_train, y_train), (x_test, y_test) = cifar100.load_data()
 
-x_train, x_test = x_train.reshape(50000, 32*32*3) / 255, x_test.reshape(10000, 32*32*3) / 255
-scaler = StandardScaler()
+#1. data preprocessing
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train = x_train.reshape((60000, 28 * 28 * 1))
+x_test = x_test.reshape((10000, 28 * 28 * 1))
+scaler = MinMaxScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
-x_train, x_test = x_train.reshape(50000, 32, 32, 3), x_test.reshape(10000, 32, 32, 3)
 
-# print(np.unique(y_train)) # [0 1 ... 98 99]
+# print(np.unique(y_train)) # [0 1 2 3 4 5 6 7 8 9]
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
@@ -29,42 +29,32 @@ y_test = to_categorical(y_test)
 # y_test = onehot_encoder.fit_transform(y_test).toarray()
 
 #2. modeling
-from tensorflow.keras.layers import Dropout, GlobalAveragePooling2D
-input = Input(shape=(32, 32, 3))
-x = Conv2D(32, (3,3), activation='relu')(input)
+input = Input(shape=(28 * 28 * 1, ))
+x = Dense(32, activation='relu')(input)
 x = Dropout(0.2)(x)
-x = MaxPooling2D()(x)
-
-x = Conv2D(64, (3,3), activation='relu')(x)
+x = Dense(64, activation='relu')(x)
 x = Dropout(0.2)(x)
-x = MaxPooling2D()(x)
-
-x = Conv2D(64, (3,3), activation='relu')(x)
+x = Dense(32, activation='relu')(x)
 x = Dropout(0.2)(x)
-x = MaxPooling2D()(x)
-
-x = GlobalAveragePooling2D()(x)
-output = Dense(100, activation='softmax')(x)
+output = Dense(10, activation='softmax')(x)
 
 model = Model(inputs=input, outputs=output)
 
 #3. compiling, training
-
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau
-optimizer = Adam(learning_rate=0.1)
+optimizer = Adam(learning_rate=0.001)
 reduce_lr = ReduceLROnPlateau(monitor='val_acc', patience=10, mode='max', verbose=1, factor=0.5)
-
 es = EarlyStopping(monitor='val_acc', patience=10, mode='max', verbose=1)
-
-model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['acc'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', 
+                        metrics=['acc'])
 start_time = time.time()
-hist = model.fit(x_train, y_train, epochs=64, batch_size=512, 
-                            validation_split=0.1, callbacks=[reduce_lr])
+hist = model.fit(x_train, y_train, epochs=64, batch_size=32, 
+                                validation_split=0.001, callbacks=[es, reduce_lr])
 end_time = time.time() - start_time
 
 #4. evaluating, prediction
-loss = model.evaluate(x_test, y_test, batch_size=64)
+loss = model.evaluate(x_test, y_test)
 
 print('loss = ', loss[0])
 print('accuracy = ', loss[1])
@@ -95,7 +85,7 @@ plt.legend(['acc', 'val_acc'])
 plt.show()
 
 '''
-loss =  2.2278549671173096
-accuracy =  0.4449999928474426
-time taken(s) :  108.50786089897156
+loss =  0.1202073022723198
+accuracy =  0.9659000039100647
+time taken(s) :  88.60119223594666
 '''
