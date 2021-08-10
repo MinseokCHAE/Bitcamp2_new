@@ -28,7 +28,7 @@ print('score = ', score)
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense
 
-# deep learning 'Linear' modeling
+# deep learning '단층 Linear' modeling
 input = Input((2,))
 output = Dense(1, activation='sigmoid')(input)
 model = Model(inputs=input, outputs=output)
@@ -36,7 +36,17 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 model.fit(x,y, epochs=100, batch_size=1)
 evaluate = model.evaluate(x,y)
 print('acc = ', evaluate[1])
-# acc =  0.75 
+# acc =  0.25, 0.5, 0.75
 
-# deep learning '' modeling
+# deep learning '다층' modeling
+input = Input((2,))
+d = Dense(10, activation='relu')(input)
+d = Dense(10, activation='relu')(d)
+output = Dense(1, activation='sigmoid')(d)
+model = Model(inputs=input, outputs=output)
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
+model.fit(x,y, epochs=100, batch_size=1)
+evaluate = model.evaluate(x,y)
+print('acc = ', evaluate[1])
+# acc =  1.0
 
