@@ -5,6 +5,7 @@ from sklearn.datasets import load_iris, load_boston
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 datasets = load_iris()
 x = datasets.data
@@ -29,5 +30,16 @@ def plot_feature_importance(model):
     plt.ylim(-1, n_features)
 
 plot_feature_importance(model)
-# plt.show() # sepal width column 제거
+# plt.show() # sepal width column 제거 (2nd column)
 
+# print(x.shape) # (150, 4)
+x = np.delete(x, 1, axis=1) # 2nd column 제거
+# print(x.shape) # (150, 3)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, shuffle=True, random_state=21)
+model.fit(x_train, y_train)
+score = model.score(x_test, y_test)
+fi = model.feature_importances_
+# print('score = ', score)
+# print('feature importance = ', fi) 
+# score =  0.9
+# feature importance =  [0.21223133 0.42916269 0.35860597]
