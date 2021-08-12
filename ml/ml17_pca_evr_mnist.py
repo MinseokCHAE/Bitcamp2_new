@@ -19,7 +19,7 @@ x = pca.fit_transform(x)
 # print(x.shape) # (70000, 154)
 
 pca_evr = pca.explained_variance_ratio_
-print(sum(pca_evr)) # 0.9499943055215889
+# print(sum(pca_evr)) # 0.9499943055215889
 
 cumsum = np.cumsum(pca_evr)
 n_component = np.argmax(cumsum >= 0.95) + 1

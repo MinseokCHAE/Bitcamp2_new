@@ -16,18 +16,18 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 
 
 submission = pd.read_csv('../_data/dacon/climatetech_grouping/sample_submission.csv', header=0)
-x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_token.npy')
-y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_token.npy')
-x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_token.npy')
+x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_count.npy')
+y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_count.npy')
+x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_count.npy')
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=21)
 
-model = XGBClassifier()
+model = RandomForestClassifier()
 model.fit(x_train, y_train)
 score = model.score(x_test, y_test)
 
 print('score = ', score)
-# score =   0.8902891455671996
+# score =  0.9027958387516255
 
 prediction = model.predict(x_pred)
 index = np.array([range(174304, 217880)])
