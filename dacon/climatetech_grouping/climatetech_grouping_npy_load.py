@@ -20,10 +20,10 @@ x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_count.npy')
 y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_count.npy')
 x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_count.npy')
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=21)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=21)
 
-model = RandomForestClassifier()
-model.fit(x_train, y_train)
+model = XGBClassifier()
+model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)], eval_metric='mlogloss' , early_stopping_rounds=10)
 score = model.score(x_test, y_test)
 
 print('score = ', score)

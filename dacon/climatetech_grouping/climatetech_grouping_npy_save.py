@@ -19,8 +19,8 @@ datasets_test = datasets_test.fillna('가나다')
 # print(datasets_train.shape, datasets_test.shape)    # (174304, 13) (43576, 12)
 
 # x, y, x_pred 분류 
-x = datasets_train['과제명'] + datasets_train['요약문_한글키워드']
-x_pred = datasets_test['과제명'] + datasets_test['요약문_한글키워드']
+x = datasets_train['요약문_한글키워드']
+x_pred = datasets_test['요약문_한글키워드']
 y = datasets_train.iloc[:, -1]
 # print(x.shape, y.shape, x_pred.shape) # (174304,) (174304,) (43576,)
 # print(x[:5], x_pred[:5])
@@ -46,7 +46,7 @@ x_pred = count.transform(x_pred)
 x = x.toarray()
 x_pred = x_pred.toarray()
 # print(x[:5], x_pred[:5])
-# print(x.shape, x_pred.shape) # (174304, 2047) (43576, 2047)
+# print(x.shape, x_pred.shape) # (174304, 1639) (43576, 1639)
 
 # x, x_pred padding
 # max_len1 = max(len(i) for i in x)
