@@ -18,35 +18,38 @@ datasets_train = datasets_train.fillna('가나다')
 datasets_test = datasets_test.fillna('가나다')
 # print(datasets_train.shape, datasets_test.shape)    # (174304, 13) (43576, 12)
 
+# 불필요한 특수문자 및 기호 삭제
+def text_cleaning(input):
+    text = re.sub("[^가-힣ㄱ-하-ㅣ]", " ", input)
+    return text
+datasets_train['과제명'] = datasets_train['과제명'].apply(lambda x : text_cleaning(x))
+datasets_train['요약문_한글키워드'] = datasets_train['요약문_한글키워드'].apply(lambda x : text_cleaning(x))
+datasets_test['과제명'] = datasets_test['과제명'].apply(lambda x : text_cleaning(x))
+datasets_test['요약문_한글키워드'] = datasets_test['요약문_한글키워드'].apply(lambda x : text_cleaning(x))
+
 # x, y, x_pred 분류 
-x = datasets_train['요약문_한글키워드']
-x_pred = datasets_test['요약문_한글키워드']
+x = datasets_train['과제명'] + datasets_train['요약문_한글키워드']
+x_pred = datasets_test['과제명'] + datasets_test['요약문_한글키워드']
 y = datasets_train.iloc[:, -1]
 # print(x.shape, y.shape, x_pred.shape) # (174304,) (174304,) (43576,)
 # print(x[:5], x_pred[:5])
-
-# 불필요한 특수문자 및 기호 삭제
-# def text_cleaning(input):
-#     text = re.sub("[^가-힣ㄱ-하-ㅣ]", " ", input)
-#     return text
-# x = text_cleaning(x)
-# x_pred = text_cleaning(x_pred)
-# print(x.shape, x_pred.shape)
 
 # tokenizer, vectorization
 # token = Tokenizer()
 # token.fit_on_texts(x)
 # x = token.texts_to_sequences(x)
 # x_pred = token.texts_to_sequences(x_pred)
-# vector = TfidfVectorizer(min_df=0.0, analyzer='char', sublinear_tf=True, ngram_range=(1, 3), max_features=5000)
-count = CountVectorizer(tokenizer = lambda a: a, lowercase=False)
-count.fit(x)
-x = count.transform(x)
-x_pred = count.transform(x_pred)
+vector = TfidfVectorizer(
+    min_df=0.0, analyzer='char', sublinear_tf=True, ngram_range=(1, 3), max_features=3000,
+    tokenizer = lambda a: a, lowercase=False)
+# count = CountVectorizer(tokenizer = lambda a: a, lowercase=False)
+vector.fit(x)
+x = vector.transform(x)
+x_pred = vector.transform(x_pred)
 x = x.toarray()
 x_pred = x_pred.toarray()
 # print(x[:5], x_pred[:5])
-# print(x.shape, x_pred.shape) # (174304, 1639) (43576, 1639)
+print(x.shape, x_pred.shape) # (174304, 3000) (43576, 3000)
 
 # x, x_pred padding
 # max_len1 = max(len(i) for i in x)
@@ -61,6 +64,6 @@ x_pred = x_pred.toarray()
 # print(np.unique(x), np.unique(x_pred)) # 0~316992
 
 # 전처리 데이터 npy저장
-np.save('./_save/_npy/dacon/climatetech_grouping/CTG_x_count.npy', arr=x)
-np.save('./_save/_npy/dacon/climatetech_grouping/CTG_y_count.npy', arr=y)
-np.save('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_count.npy', arr=x_pred)
+np.save('./_save/_npy/dacon/climatetech_grouping/CTG_x_vector.npy', arr=x)
+np.save('./_save/_npy/dacon/climatetech_grouping/CTG_y_vector.npy', arr=y)
+np.save('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_vector.npy', arr=x_pred)

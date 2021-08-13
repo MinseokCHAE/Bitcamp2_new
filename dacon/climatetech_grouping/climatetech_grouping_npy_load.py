@@ -16,18 +16,18 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 
 
 submission = pd.read_csv('../_data/dacon/climatetech_grouping/sample_submission.csv', header=0)
-x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_count.npy')
-y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_count.npy')
-x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_count.npy')
+x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_vector.npy')
+y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_vector.npy')
+x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_vector.npy')
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=21)
 
-model = XGBClassifier()
-model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)], eval_metric='mlogloss' , early_stopping_rounds=10)
+model = XGBClassifier(n_estimators=200, tree_method='gpu_hist')
+model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)], eval_metric='mlogloss' , early_stopping_rounds=20)
 score = model.score(x_test, y_test)
 
 print('score = ', score)
-# score =  0.9027958387516255
+# score =  0.9151487335417802
 
 prediction = model.predict(x_pred)
 index = np.array([range(174304, 217880)])
