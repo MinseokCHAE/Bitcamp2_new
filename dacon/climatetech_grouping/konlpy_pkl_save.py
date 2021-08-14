@@ -53,9 +53,9 @@ def drop_short_texts(train, target_columns):
     return train
 
 def sampling_data(train, target_columns):
-    pj_name_len = 18
-    summ_goal_len = 210
-    summ_key_len = 18
+    pj_name_len = 21
+    summ_goal_len = 111
+    summ_key_len = 21
 
     max_lens = [pj_name_len, summ_goal_len, summ_key_len]
     total_index = set(train.index)
@@ -120,7 +120,7 @@ def ngram_vectorize(train_data, label, test_data, top_k) :
     x_train = vectorizer.fit_transform(train_data)
     x_test = vectorizer.transform(test_data)
 
-    selector = SelectKBest(f_classif, k=min(80000,top_k))
+    selector = SelectKBest(f_classif, k=min(11111,top_k))
     selector.fit(x_train, label.values)
     x_train = selector.transform(x_train).astype('float32')
     x_test = selector.transform(x_test).astype('float32')
@@ -131,7 +131,7 @@ def vectorize_data(train, test, top_ks, target_columns):
     train_inputs = []
     test_inputs = []
     for top_k, column in zip(top_ks, target_columns):
-        train_input, test_input = ngram_vectorize(train[column], train['label'], test[column], min(80000,top_k))
+        train_input, test_input = ngram_vectorize(train[column], train['label'], test[column], min(11111,top_k))
         train_inputs.append(train_input)
         test_inputs.append(test_input)
         
@@ -175,5 +175,5 @@ def data_loading_and_setting_main():
 
 train_inputs, test_inputs, labels = data_loading_and_setting_main()
 
-# with open('./_save/_npy/dacon/climatetech_grouping/inputs.pkl', 'wb') as f:
-#      pickle.dump((train_inputs, test_inputs, labels), f)
+with open('./_save/_npy/dacon/climatetech_grouping/inputs.pkl', 'wb') as f:
+     pickle.dump((train_inputs, test_inputs, labels), f)

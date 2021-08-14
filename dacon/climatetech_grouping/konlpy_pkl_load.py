@@ -20,7 +20,6 @@ warnings.filterwarnings('ignore')
 
 from glob import glob
 
-
 def get_input_dataset(data, index, train = False) : 
     input0 = tf.convert_to_tensor(data[0][index].toarray(), tf.float32)
     input1 = tf.convert_to_tensor(data[1][index].toarray(), tf.float32)
@@ -87,7 +86,10 @@ for train_idx, valid_idx in skf.split(train_inputs[0], labels):
     X_train_input0, X_train_input1, X_train_input2, X_train_label = get_input_dataset(train_inputs, train_idx, train = True)
     X_valid_input0, X_valid_input1, X_valid_input2, X_valid_label = get_input_dataset(train_inputs, valid_idx, train = True)
     
-        
+    now = datetime.now()
+    now = str(now)[11:16].replace(':','h')+'m'
+    ckpt_path = f'./_save/_mcp/dacon/climatetech_grouping/{now}.ckpt'
+
     input_shape0 = X_train_input0.shape[1]
     input_shape1 = X_train_input1.shape[1]
     input_shape2 = X_train_input2.shape[1]
@@ -95,24 +97,25 @@ for train_idx, valid_idx in skf.split(train_inputs[0], labels):
 
     callbacks = [
         tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5),
-                tf.keras.callbacks.ReduceLROnPlateau(monitor = 'val_loss', factor=0.9, patience = 2,),
+        tf.keras.callbacks.ModelCheckpoint(ckpt_path, monitor = 'val_acc', save_best_only= True, save_weights_only=True),
+        tf.keras.callbacks.ReduceLROnPlateau(monitor = 'val_loss', factor=0.7, patience = 2,),
                 ]
     model = create_model(input_shape0,input_shape1,input_shape2, num_labels, learning_rate)
     model.fit(
                         [X_train_input0,X_train_input1,X_train_input2],
                         X_train_label,
-                        epochs=100,
+                        epochs=1000,
                         callbacks=callbacks,
                         validation_data=([X_valid_input0, X_valid_input1, X_valid_input2], X_valid_label),
                         verbose=1,  # Logs once per epoch.
                         batch_size=1024)
     
+    model.load_weights(ckpt_path)
     prediction = model.predict([test_inputs[0], test_inputs[1], test_inputs[2]])
-    np.save('./_save/_npy/dacon/climatetech_grouping/konlpy_prediction.npy', prediction)
-
+    np.save(f'./_save/_mcp/dacon/climatetech_grouping/{now}_prediction.npy', prediction)
 
 predictions = []
-for ar in glob('*.npy'):
+for ar in glob('./_save/_mcp/dacon/climatetech_grouping/*.npy'):
     arr = np.load(ar)
     predictions.append(arr)
 
@@ -120,3 +123,6 @@ sample = pd.read_csv('../_data/dacon/climatetech_grouping/sample_submission.csv'
 sample['label'] = np.argmax(np.mean(predictions,axis=0), axis = 1)
 sample.to_csv('../_data/dacon/climatetech_grouping/konlpy.csv',index=False)
 
+with open('./_save/_npy/dacon/climatetech_grouping/inputs.pkl','rb') as f :
+    train_inputs, test_inputs, labels = pickle.load(f)
+    
