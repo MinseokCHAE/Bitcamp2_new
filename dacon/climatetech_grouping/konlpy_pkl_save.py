@@ -175,10 +175,5 @@ def data_loading_and_setting_main():
 
 train_inputs, test_inputs, labels = data_loading_and_setting_main()
 
-x = train_inputs
-x_pred = test_inputs
-y = labels
-
-np.save('./_save/_npy/dacon/climatetech_grouping/CTG_x_baseline.npy', arr=x)
-np.save('./_save/_npy/dacon/climatetech_grouping/CTG_y_baseline.npy', arr=y)
-np.save('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_baseline.npy', arr=x_pred)
+# with open('./_save/_npy/dacon/climatetech_grouping/inputs.pkl', 'wb') as f:
+#      pickle.dump((train_inputs, test_inputs, labels), f)

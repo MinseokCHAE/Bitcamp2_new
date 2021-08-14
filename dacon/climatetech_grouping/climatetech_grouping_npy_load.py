@@ -16,9 +16,9 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 
 
 submission = pd.read_csv('../_data/dacon/climatetech_grouping/sample_submission.csv', header=0)
-x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_vector.npy')
-y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_vector.npy')
-x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_vector.npy')
+x = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_baseline.npy')
+y = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_y_baseline.npy')
+x_pred = np.load('./_save/_npy/dacon/climatetech_grouping/CTG_x_pred_baseline.npy')
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=21)
 
