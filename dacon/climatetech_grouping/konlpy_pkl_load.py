@@ -36,7 +36,7 @@ def single_dense(x, units):
     fc = Dense(units, activation = None, kernel_initializer = 'he_normal')(x)
     batch = BatchNormalization()(fc)
     relu = ReLU()(batch)
-    dr = Dropout(0.2)(relu)
+    dr = Dropout(0.5)(relu)
     
     return dr
 
@@ -125,4 +125,3 @@ sample.to_csv('../_data/dacon/climatetech_grouping/konlpy.csv',index=False)
 
 with open('./_save/_npy/dacon/climatetech_grouping/inputs.pkl','rb') as f :
     train_inputs, test_inputs, labels = pickle.load(f)
-    
