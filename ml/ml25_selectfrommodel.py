@@ -22,6 +22,8 @@ best_score = random.best_score_
 # print('best parameter = ', best_estimator)
 # print('best score = ', best_score)
 '''
+from sklearn.feature_selection import SelectFromModel
+
 model = XGBRegressor(
     base_score=0.5, booster='gbtree', colsample_bylevel=1,
     colsample_bynode=1, colsample_bytree=1, gamma=1000, gpu_id=-1,
@@ -32,10 +34,9 @@ model = XGBRegressor(
     reg_alpha=0, reg_lambda=1, scale_pos_weight=1, subsample=1,
     tree_method='exact', validate_parameters=1, verbosity=None
 )
+model.fit(x_train, y_train)
 
-from sklearn.feature_selection import SelectFromModel
 threshold = np.sort(model.feature_importances_)
-
 for thresh in threshold:
     # print(thresh)
     
@@ -46,7 +47,16 @@ for thresh in threshold:
     select_x_test = selection.transform(x_test)
     # print(select_x_train.shape, select_x_test.shape)
 
-    selection_model = XGBRFRegressor(n_jobs=-1)
+    selection_model = XGBRegressor(
+        base_score=0.5, booster='gbtree', colsample_bylevel=1,
+    colsample_bynode=1, colsample_bytree=1, gamma=1000, gpu_id=-1,
+    importance_type='gain', interaction_constraints='',       
+    learning_rate=0.300000012, max_delta_step=0, max_depth=8, 
+    min_child_weight=1, monotone_constraints='()',
+    n_estimators=100, n_jobs=8, num_parallel_tree=1, random_state=0,
+    reg_alpha=0, reg_lambda=1, scale_pos_weight=1, subsample=1,
+    tree_method='exact', validate_parameters=1, verbosity=None
+    )
     selection_model.fit(select_x_train, y_train)
 
     y_pred = selection_model.predict(select_x_test)
