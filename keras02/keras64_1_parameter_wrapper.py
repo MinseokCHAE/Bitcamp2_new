@@ -37,5 +37,20 @@ parameter = create_parameter()
 model = KerasClassifier(build_fn=build_model, verbose=1)
 
 random = RandomizedSearchCV(model, parameter, cv=5)
-random.fit(x_train, y_train, verbose=1)
+random.fit(x_train, y_train, epochs=8, verbose=1)
 
+best_par = random.best_params_
+best_est = random.best_estimator_
+best_score = random.best_score_
+score = random.score(x_test, y_test)
+
+print('best parameter = ', best_par)
+print('best estimator = ', best_est)
+print('best score = ', best_score)
+print('score = ', score)
+'''
+best parameter =  {'rate': 0.1, 'optimizer': 'adam', 'batch_size': 64} 
+best estimator =  <tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x0000014EE72D0CA0>
+best score =  0.9768499851226806
+score =  0.9765999913215637
+'''
