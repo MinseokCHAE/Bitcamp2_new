@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.covariance import EllipticEnvelope
 from xgboost import XGBClassifier
 from imblearn.over_sampling import SMOTE
+from sklearn.metrics import accuracy_score, f1_score
+
 
 datasets = pd.read_csv('../_data/study/winequality-white.csv',
                                 index_col=None, header=0, sep=';')
@@ -62,6 +64,9 @@ x_smote_train, y_smote_train = smote.fit_resample(x_train, y_train)
 model = XGBClassifier(n_jobs=-1)
 model.fit(x_smote_train, y_smote_train, eval_metric='mlogloss')
 score = model.score(x_test, y_test)
-print('score = ', score)   # score =  0.7969387755102041
 
+y_pred = model.predict(x_test)
+f1_score = f1_score(y_test, y_pred, average='macro')
+# print('score = ', score)   # score =  0.7969387755102041
+print('f1 score = ', f1_score)   # f1 score =  0.6793478632461666
 
