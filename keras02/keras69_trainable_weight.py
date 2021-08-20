@@ -11,5 +11,9 @@ d = Dense(2)(d)
 output = Dense(1)(d)
 model = Model(inputs=input, outputs=output)
 
-model.summary()
+# print(model.weights)
+# print(model.trainable_weights)
+
+# print(len(model.weights)) # 6
+# print(len(model.trainable_weights)) # 6 = 3 * (w+b) 
 
