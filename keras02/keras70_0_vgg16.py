@@ -1,5 +1,6 @@
+import pandas as pd
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.layers import Input, Dense, Flatten
 from tensorflow.keras.applications import VGG16, VGG19
 
 # model = VGG16()
@@ -61,8 +62,32 @@ Trainable params: 138,357,544
 Non-trainable params: 0
 '''
 model = VGG16(weights='imagenet', include_top=False, input_shape=(100,100,3))
-# model.trainable=False
+model.trainable=False
 # model.summary()
+# print(len(model.weights)) # 26
+# print(len(model.trainable_weights)) # 26
 
-print(len(model.weights)) # 26
-print(len(model.trainable_weights)) # 26
+input = Input((100,100,3))
+xx = VGG16(weights='imagenet', include_top=False)(input)
+xx = Flatten()(xx)
+xx = Dense(10)(xx)
+output = Dense(1)(xx)
+model = Model(inputs=input, outputs=output)
+
+# model.summary()
+# print(len(model.weights)) # 30 -> Dense 2개층 추가 (+4)
+# print(len(model.trainable_weights)) # 30
+
+pd.set_option('max_colwidth', -1)
+layers = [(layer, layer.name, layer.trainable) for layer in model.layers]
+results = pd.DataFrame(layers, columns = ['Layer Type', 'Layer Name', 'Layer trainable'])
+
+# print(results)
+'''
+                                                                                                                                        Layer Type Layer Name  Layer trainable
+0  <tensorflow.python.keras.engine.input_layer.InputLayer object at 0x00000125D07FEE50>  input_2    True
+1  <tensorflow.python.keras.engine.functional.Functional object at 0x00000125D956A220>   vgg16      True
+2  <tensorflow.python.keras.layers.core.Flatten object at 0x00000125D94C6F70>            flatten    True
+3  <tensorflow.python.keras.layers.core.Dense object at 0x00000125D956A880>              dense      True
+4  <tensorflow.python.keras.layers.core.Dense object at 0x00000125D12EE7F0>              dense_1    True
+'''
