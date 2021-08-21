@@ -19,9 +19,10 @@ x_test = x_test.reshape((10000, 32, 32, 3))
 
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
-
-input = Input((32,32,3))
+'''
+input = Input(shape=None)
 xx = NASNetMobile(weights=None, include_top=False)(input)
+'''
 xx = Flatten()(xx)
 xx = Dense(20, activation='relu')(xx)
 output = Dense(10, activation='softmax')(xx)
