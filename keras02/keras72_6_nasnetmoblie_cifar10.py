@@ -1,6 +1,6 @@
 import pandas as pd
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Dense, Flatten, GlobalAveragePooling2D
+from tensorflow.keras.layers import Input, Dense, Flatten, GlobalAveragePooling2D, UpSampling2D
 from tensorflow.keras.applications import NASNetMobile
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.utils import to_categorical
@@ -19,11 +19,11 @@ x_test = x_test.reshape((10000, 32, 32, 3))
 
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
-'''
-input = Input(shape=None)
-xx = NASNetMobile(weights=None, include_top=False)(input)
-'''
-xx = Flatten()(xx)
+
+input = Input(shape=(32,32,3))
+xx = UpSampling2D((7,7))(input)
+xx = NASNetMobile(weights='imagenet', include_top=False, input_shape=(32*7, 32*7, 3))(xx)
+xx = GlobalAveragePooling2D()(xx)
 xx = Dense(20, activation='relu')(xx)
 output = Dense(10, activation='softmax')(xx)
 model = Model(inputs=input, outputs=output)
@@ -34,5 +34,5 @@ model.fit(x_train, y_train, epochs=16, batch_size=512, validation_split=0.01)
 loss = model.evaluate(x_test, y_test)
 print('loss = ', loss[0])
 print('accuracy = ', loss[1])
-# loss =  
+# loss =  메모리터짐
 # accuracy =  
