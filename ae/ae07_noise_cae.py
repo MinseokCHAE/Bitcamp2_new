@@ -14,12 +14,18 @@ x_test_noised = x_test + np.random.normal(0, 0.1, size=x_test.shape)
 x_train_noised = np.clip(x_train_noised, a_min=0, a_max=1)
 x_test_noised = np.clip(x_test_noised, a_min=0, a_max=1)
 
+x_train_noised = x_train_noised.reshape(60000, 28, 28)
+x_test_noised = x_test_noised.reshape(10000, 28, 28)
+
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.layers import Input, Dense, Conv1D, MaxPooling1D, UpSampling1D, Flatten
 
 def autoencoder(hidden_layer_size):
-    input = Input((784,))
-    xx = Dense(units=hidden_layer_size, activation='relu')(input)
+    input = Input((28, 28))
+    xx = Conv1D(hidden_layer_size, 2, activation='relu')(input)
+    xx = MaxPooling1D()(xx)
+    xx = Conv1D(hidden_layer_size, 2, activation='relu')(xx)
+    xx = Flatten()(xx)
     output = Dense(784, activation='sigmoid')(xx)
     model = Model(input, output)
     return model

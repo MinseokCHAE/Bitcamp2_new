@@ -37,7 +37,7 @@ img_decoded1 = model.predict(x_test)
 
 model = autoencoder2(hidden_layer_size=154)  # pca 95%
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, x_train2, epochs=10, batch_size=128, validation_split=0.01)
+model.fit(x_train, x_train, epochs=10, batch_size=128, validation_split=0.01)
 img_decoded2 = model.predict(x_test)
 
 import matplotlib.pyplot as plt
@@ -63,7 +63,7 @@ for i, ax in enumerate([ax6, ax7, ax8, ax9, ax10]):
     ax.set_yticks([])
 
 for i, ax in enumerate([ax11, ax12, ax13, ax14, ax15]):
-    ax.imshow(img_decoded1[random_images[i]].reshape(28,28), cmap='gray')
+    ax.imshow(img_decoded2[random_images[i]].reshape(28,28), cmap='gray')
     if i == 0:
         ax.set_ylabel('Output2', size=20)
     ax.grid(False)
