@@ -16,7 +16,7 @@ b = tf.Variable(tf.random_normal([1]))
 hypothesis = tf.add(tf.matmul(x, w), b)
 
 loss = tf.reduce_mean(tf.square(y-hypothesis))
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.0001)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.00001)
 train = optimizer.minimize(loss)
 
 session = tf.Session()
@@ -37,6 +37,6 @@ total_error, unexplained_error, R_squared, R = session.run(
     [total_error, unexplained_error, R_squared, R], 
     feed_dict={x:x_data, y:y_data})
 print('R2 score = ', R/100)
-# R2 score =  0.64045654296875
+# R2 score =  0.7670832061767578
 
 session.close()
