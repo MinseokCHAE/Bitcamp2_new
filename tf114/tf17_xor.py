@@ -35,7 +35,7 @@ logits = tf.matmul(layer5, w6) + b6
 hypothesis = tf.sigmoid(logits)
 
 loss = tf.reduce_mean(y * tf.log(hypothesis) + (1-y) * tf.log(1-hypothesis))
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.000001)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.0001)
 train = optimizer.minimize(loss)
 
 prediction = tf.cast(hypothesis > 0.5, dtype=tf.float32)
