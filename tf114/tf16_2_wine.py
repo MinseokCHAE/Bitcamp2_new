@@ -24,7 +24,7 @@ hypothesis = tf.nn.softmax(logits)
 
 loss_i = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y_onehot)
 loss = tf.reduce_mean(loss_i)
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1)
 train = optimizer.minimize(loss)
 
 prediction = tf.argmax(hypothesis, 1)
@@ -38,7 +38,11 @@ with tf.Session() as session:
     for epochs in range(2001):
         session.run(train, feed_dict={x:x_data, y:y_data})
         if epochs % 100 == 0:
-            loss, acc = session.run([loss, accuracy], feed_dict={x:x_data, y:y_data})
-            print('epochs = {:5} \tloss = {:.3f} \taccuracy = {:.2%}'.format(epochs,loss,acc))
+            loss_val, acc = session.run([loss, accuracy], feed_dict={x:x_data, y:y_data})
+            print('epochs = {:5} \tloss = {:.3f} \taccuracy = {:.2%}'.format(epochs,loss_val,acc))
+
+# epochs =  1800  loss = 4612.359         accuracy = 66.29%
+# epochs =  1900  loss = 3913.098         accuracy = 65.17%
+# epochs =  2000  loss = 1807.328         accuracy = 59.55%
 
 session.close()
