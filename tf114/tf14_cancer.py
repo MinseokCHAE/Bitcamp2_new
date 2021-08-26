@@ -18,7 +18,7 @@ prediction = tf.cast(hypothesis > 0.5, dtype=tf.float32)
 accuracy = tf.reduce_mean(tf.cast(tf.equal(prediction, y), dtype=tf.float32))
 
 cost = tf.reduce_mean(y * tf.log(hypothesis) + (1-y) * tf.log(1-hypothesis))    # binary_crossentropy
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01010101)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01234)
 train = optimizer.minimize(cost)
 
 session = tf.Session()
