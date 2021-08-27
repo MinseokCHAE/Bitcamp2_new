@@ -33,7 +33,7 @@ from tensorflow.keras.layers import Dense, Dropout
 def create_deep_learning_model():
     model = Sequential()
     model.add(Dense(2048, input_dim=2048, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(2048, activation='relu'))
+    model.add(Dense(1024, activation='relu'))
     model.add(Dense(512, activation='relu'))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(32, activation='relu'))
@@ -58,7 +58,7 @@ results = cross_val_score(pipeline, X, Y, cv=kfold)
 # print("%.2f (%.2f) MAE" % (results.mean(), results.std()))
 
 model = create_deep_learning_model()
-model.fit(X, Y, epochs = 512)
+model.fit(X, Y, epochs = 111)
 test_y = model.predict(np_test_fps_array)
 ss['ST1_GAP(eV)'] = test_y
 ss.to_csv("../_data/dacon/polymer_properties/rdkit.csv", index=False)
