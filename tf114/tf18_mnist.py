@@ -39,7 +39,7 @@ hypothesis = tf.nn.softmax(logits)
 loss_i = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y)
 loss = tf.reduce_mean(loss_i)
 # loss = tf.reduce_mean(-tf.reduce_sum(y * tf.log(hypothesis), axis=1))
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.456)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.543)
 train = optimizer.minimize(loss)
 
 prediction = tf.argmax(hypothesis, 1)
@@ -74,12 +74,12 @@ with tf.Session() as session:
     plt.imshow(mnist.test.images[r:r+1].reshape(28,28), cmap='Greys', interpolation='nearest')
     plt.show()
 
-# epoch =  0018 loss =  0.308619802
-# epoch =  0019 loss =  0.307700236
-# epoch =  0020 loss =  0.308468614
-# epoch =  0021 loss =  0.308303617
-# accuracy =  0.9196
-# label =  [9]
-# prediction =  [9]
+# epoch =  0018 loss =  0.325874007
+# epoch =  0019 loss =  0.325059801
+# epoch =  0020 loss =  0.325965589
+# epoch =  0021 loss =  0.326020300
+# accuracy =  0.9168
+# label =  [1]
+# prediction =  [1]
 
 session.close()
