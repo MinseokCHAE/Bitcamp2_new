@@ -28,9 +28,9 @@ y_test = to_categorical(y_test)
 x_train = x_train.reshape(50000, 32, 32, 3).astype('float32')/255.
 x_test = x_test.reshape(10000, 32, 32, 3).astype('float32')/255.
 
-learning_rate = 0.0001
-training_epochs = 8
-batch_size = 128
+learning_rate = 0.000001
+training_epochs = 16
+batch_size = 64
 total_batch = int(len(x_train)/batch_size)
 
 x = tf.compat.v1.placeholder(tf.float32, [None, 32, 32, 3])
@@ -167,4 +167,4 @@ prediction = tf.equal(tf.compat.v1.arg_max(hypothesis, 1), tf.compat.v1.argmax(y
 accuracy = tf.reduce_mean(tf.cast(prediction, tf.float32))
 print('ACC :', sess.run(accuracy, feed_dict={x:x_test, y:y_test}))
 
-# ACC : 0.966
+# ACC : 0.5482
