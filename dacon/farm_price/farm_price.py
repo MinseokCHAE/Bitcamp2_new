@@ -39,8 +39,8 @@ EPOCHS = 64 # 총 eopochs
 teacher_forcing = False # 교사강요 설정
 n_layers = 3 # rnn레이어 층
 dropout = 0.39 # 드롭아웃
-window_size = 39 # 인코더 시퀀스 길이
-future_size = 39 # 디코더 시퀀스 길이
+window_size = 21 # 인코더 시퀀스 길이
+future_size = 21 # 디코더 시퀀스 길이
 hidden_dim = 256 # rnn 히든차원
 save_path = f'./_save/_mcp/dacon/farm_price/best_model.pt' # 모델 저장 경로
 
