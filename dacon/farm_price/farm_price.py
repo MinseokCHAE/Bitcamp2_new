@@ -27,7 +27,7 @@ week_day_map = {}
 for i, d in enumerate(data['요일'].unique()):
     week_day_map[d] = i
 data['요일'] = data['요일'].map(week_day_map)
-
+    
 norm = data.iloc[:, 1:].max(0)
 data.iloc[:, 1:] = data.iloc[:, 1:] / norm
 
@@ -41,7 +41,7 @@ n_layers = 4 # rnn레이어 층
 dropout = 0.21 # 드롭아웃
 window_size = 21 # 인코더 시퀀스 길이
 future_size = 21 # 디코더 시퀀스 길이
-hidden_dim = 64 # rnn 히든차원
+hidden_dim = 128 # rnn 히든차원
 save_path = f'./_save/_mcp/dacon/farm_price/best_model.pt' # 모델 저장 경로
 
 x_data = []
