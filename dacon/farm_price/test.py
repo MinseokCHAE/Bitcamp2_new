@@ -1,3 +1,4 @@
+# pytorch GPU check
 import torch
  
 #  Returns a bool indicating if CUDA is currently available.
