@@ -37,16 +37,20 @@ learning_rate = 1e-5 # 학습률
 BATCH_SIZE = 64 # 배치사이즈
 EPOCHS = 50 # 총 eopochs
 teacher_forcing = False # 교사강요 설정
-n_layers = 4 # rnn레이어 층
-dropout = 0.31 # 드롭아웃
+n_layers = 3 # rnn레이어 층
+dropout = 0.17 # 드롭아웃
 window_size = 31 # 인코더 시퀀스 길이
 future_size = 31 # 디코더 시퀀스 길이
 hidden_dim = 128 # rnn 히든차원
 save_path = f'./_save/_mcp/dacon/farm_price/best_model.pt' # 모델 저장 경로
 
 '''
-이대로 돌려서 제출해봐
-시퀀스 길이 저게 관건인듯
+1e-5 64 50 false 4 0.31 31 31 128 0.29983
+1e-4 64 50 false 4 0.39 31 31 128 0.38405
+5e-5 64 50 false 4 0.39 31 28 128 0.36301
+1e-5 64 50 false 3 0.39 32 32 128 0.30704
+1e-5 64 50 false 3 0.27 31 31 128 0.30405
+1e-5 64 50 false 3 0.17 31 31 128 0.30458
 '''
 
 x_data = []
