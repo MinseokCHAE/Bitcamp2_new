@@ -33,12 +33,12 @@ data.iloc[:, 1:] = data.iloc[:, 1:] / norm
 
 device = torch.device("cuda:0") # GPU 사용
 target_n = 21 # 맞춰야하는 품목/품종의 수
-learning_rate = 1e-5 # 학습률
+learning_rate = 5e-5 # 학습률
 BATCH_SIZE = 64 # 배치사이즈
 EPOCHS = 50 # 총 eopochs
 teacher_forcing = False # 교사강요 설정
 n_layers = 3 # rnn레이어 층
-dropout = 0.17 # 드롭아웃
+dropout = 0.25 # 드롭아웃
 window_size = 31 # 인코더 시퀀스 길이
 future_size = 31 # 디코더 시퀀스 길이
 hidden_dim = 128 # rnn 히든차원
