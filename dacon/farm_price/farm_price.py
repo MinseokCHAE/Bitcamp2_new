@@ -33,16 +33,21 @@ data.iloc[:, 1:] = data.iloc[:, 1:] / norm
 
 device = torch.device("cuda:0") # GPU 사용
 target_n = 21 # 맞춰야하는 품목/품종의 수
-learning_rate = 5e-4 # 학습률
+learning_rate = 1e-5 # 학습률
 BATCH_SIZE = 64 # 배치사이즈
-EPOCHS = 64 # 총 eopochs
+EPOCHS = 50 # 총 eopochs
 teacher_forcing = False # 교사강요 설정
 n_layers = 4 # rnn레이어 층
-dropout = 0.21 # 드롭아웃
-window_size = 39 # 인코더 시퀀스 길이
-future_size = 39 # 디코더 시퀀스 길이
+dropout = 0.31 # 드롭아웃
+window_size = 31 # 인코더 시퀀스 길이
+future_size = 31 # 디코더 시퀀스 길이
 hidden_dim = 128 # rnn 히든차원
 save_path = f'./_save/_mcp/dacon/farm_price/best_model.pt' # 모델 저장 경로
+
+'''
+이대로 돌려서 제출해봐
+시퀀스 길이 저게 관건인듯
+'''
 
 x_data = []
 y_data = []
