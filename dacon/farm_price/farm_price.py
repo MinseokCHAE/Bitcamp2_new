@@ -41,7 +41,7 @@ n_layers = 3 # rnn레이어 층
 dropout = 0.25 # 드롭아웃
 window_size = 31 # 인코더 시퀀스 길이
 future_size = 31 # 디코더 시퀀스 길이
-hidden_dim = 111 # rnn 히든차원
+hidden_dim = 128 # rnn 히든차원
 save_path = f'./_save/_mcp/dacon/farm_price/best_model.pt' # 모델 저장 경로
 
 '''
