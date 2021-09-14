@@ -624,9 +624,9 @@ print(f'trg = {trg}')
 translation, attention = translate_sentence(src, SRC, TRG, model, device)
 
 print(f'predicted trg = {translation}')
-# src = ['eine', 'mutter', 'und', 'ihr', 'kleiner', 'sohn', 'genießen', 'einen'
-# trg = ['a', 'mother', 'and', 'her', 'young', 'song', 'enjoying', 'a', 'beauti
-# predicted trg = ['a', 'mother', 'and', 'her', 'son', 'are', 'enjoying', 'a', 
+# src = ['eine', 'mutter', 'und', 'ihr', 'kleiner', 'sohn', 'genießen', 'einen', 'schönen', 'tag', 'im', 'freien', '.']
+# trg = ['a', 'mother', 'and', 'her', 'young', 'song', 'enjoying', 'a', 'beautiful', 'day', 'outside', '.']
+# predicted trg = ['a', 'mother', 'and', 'her', 'son', 'are', 'enjoying', 'a', 'beautiful', 'day', '.', '<eos>']
 # ==============================================================================
 
 from torchtext.data.metrics import bleu_score
