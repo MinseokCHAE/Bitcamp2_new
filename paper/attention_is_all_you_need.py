@@ -413,6 +413,7 @@ def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 print(f'The model has {count_parameters(model):,} trainable parameters')
+# The model has 9,033,733 trainable parameters
 
 
 def initialize_weights(m):
@@ -509,6 +510,39 @@ test_loss = evaluate(model, test_iterator, criterion)
 
 print(f'| Test Loss: {test_loss:.3f} | Test PPL: {math.exp(test_loss):7.3f} |')
 
+'''
+Epoch: 01 | Time: 0m 14s
+        Train Loss: 4.234 | Train PPL:  68.996
+         Val. Loss: 3.021 |  Val. PPL:  20.516
+Epoch: 02 | Time: 0m 13s
+        Train Loss: 2.812 | Train PPL:  16.638
+         Val. Loss: 2.298 |  Val. PPL:   9.952
+Epoch: 03 | Time: 0m 13s
+        Train Loss: 2.245 | Train PPL:   9.436
+         Val. Loss: 1.974 |  Val. PPL:   7.200
+Epoch: 04 | Time: 0m 13s
+        Train Loss: 1.901 | Train PPL:   6.692
+         Val. Loss: 1.816 |  Val. PPL:   6.149
+Epoch: 05 | Time: 0m 13s
+        Train Loss: 1.658 | Train PPL:   5.249
+         Val. Loss: 1.729 |  Val. PPL:   5.635
+Epoch: 06 | Time: 0m 13s
+        Train Loss: 1.476 | Train PPL:   4.376
+         Val. Loss: 1.657 |  Val. PPL:   5.246
+Epoch: 07 | Time: 0m 13s
+        Train Loss: 1.325 | Train PPL:   3.763
+         Val. Loss: 1.636 |  Val. PPL:   5.134
+Epoch: 08 | Time: 0m 13s
+        Train Loss: 1.202 | Train PPL:   3.326
+         Val. Loss: 1.620 |  Val. PPL:   5.054
+Epoch: 09 | Time: 0m 13s
+        Train Loss: 1.099 | Train PPL:   3.000
+         Val. Loss: 1.620 |  Val. PPL:   5.054
+Epoch: 10 | Time: 0m 13s
+        Train Loss: 1.006 | Train PPL:   2.735
+         Val. Loss: 1.643 |  Val. PPL:   5.172
+| Test Loss: 1.675 | Test PPL:   5.337 |
+'''
 
 def translate_sentence(sentence, src_field, trg_field, model, device, max_len = 50):
     
@@ -560,6 +594,9 @@ print(f'trg = {trg}')
 translation, attention = translate_sentence(src, SRC, TRG, model, device)
 
 print(f'predicted trg = {translation}')
+# src = ['eine', 'frau', 'mit', 'einer', 'großen', 'geldbörse', 'geht', 'an', 'einem', 'tor', 'vorbei', '.']
+# trg = ['a', 'woman', 'with', 'a', 'large', 'purse', 'is', 'walking', 'by', 'a', 'gate', '.']
+# predicted trg = ['a', 'woman', 'with', 'a', 'large', 'purse', 'is', 'walking', 'past', 'a', 'gate', '.', '<eos>']
 # ==============================================================================
 example_idx = 6
 
@@ -572,6 +609,9 @@ print(f'trg = {trg}')
 translation, attention = translate_sentence(src, SRC, TRG, model, device)
 
 print(f'predicted trg = {translation}')
+# src = ['ein', 'brauner', 'hund', 'rennt', 'dem', 'schwarzen', 'hund', 'hinterher', '.']
+# trg = ['a', 'brown', 'dog', 'is', 'running', 'after', 'the', 'black', 'dog', '.']
+# predicted trg = ['a', 'brown', 'dog', 'running', 'after', 'the', 'black', 'dog', '.', '<eos>']
 # ==============================================================================
 example_idx = 10
 
@@ -584,8 +624,10 @@ print(f'trg = {trg}')
 translation, attention = translate_sentence(src, SRC, TRG, model, device)
 
 print(f'predicted trg = {translation}')
+# src = ['eine', 'mutter', 'und', 'ihr', 'kleiner', 'sohn', 'genießen', 'einen'
+# trg = ['a', 'mother', 'and', 'her', 'young', 'song', 'enjoying', 'a', 'beauti
+# predicted trg = ['a', 'mother', 'and', 'her', 'son', 'are', 'enjoying', 'a', 
 # ==============================================================================
-
 
 from torchtext.data.metrics import bleu_score
 
@@ -612,5 +654,5 @@ def calculate_bleu(data, src_field, trg_field, model, device, max_len = 50):
 bleu_score = calculate_bleu(test_data, SRC, TRG, model, device)
 
 print(f'BLEU score = {bleu_score*100:.2f}')
-
+# BLEU score = 35.48
 
