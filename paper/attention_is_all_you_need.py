@@ -129,25 +129,16 @@ class EncoderLayer(nn.Module):
         
     def forward(self, src, src_mask):
         
-        #src = [batch size, src len, hid dim]
-        #src_mask = [batch size, src len]
-                
         #self attention
         _src, _ = self.self_attention(src, src, src, src_mask)
-        
         #dropout, residual connection and layer norm
         src = self.layer_norm(src + self.dropout(_src))
         
-        #src = [batch size, src len, hid dim]
-        
         #positionwise feedforward
         _src = self.positionwise_feedforward(src)
-        
         #dropout, residual and layer norm
         src = self.layer_norm(src + self.dropout(_src))
-        
-        #src = [batch size, src len, hid dim]
-        
+                
         return src
 
 
@@ -164,66 +155,43 @@ class MultiHeadAttentionLayer(nn.Module):
         self.fc_q = nn.Linear(hid_dim, hid_dim)
         self.fc_k = nn.Linear(hid_dim, hid_dim)
         self.fc_v = nn.Linear(hid_dim, hid_dim)
-        
         self.fc_o = nn.Linear(hid_dim, hid_dim)
         
         self.dropout = nn.Dropout(dropout)
-        
         self.scale = torch.sqrt(torch.FloatTensor([self.head_dim])).to(device)
         
     def forward(self, query, key, value, mask = None):
         
         batch_size = query.shape[0]
         
-        #query = [batch size, query len, hid dim]
-        #key = [batch size, key len, hid dim]
-        #value = [batch size, value len, hid dim]
-                
         Q = self.fc_q(query)
         K = self.fc_k(key)
         V = self.fc_v(value)
-        
-        #Q = [batch size, query len, hid dim]
-        #K = [batch size, key len, hid dim]
-        #V = [batch size, value len, hid dim]
-                
+
         Q = Q.view(batch_size, -1, self.n_heads, self.head_dim).permute(0, 2, 1, 3)
         K = K.view(batch_size, -1, self.n_heads, self.head_dim).permute(0, 2, 1, 3)
         V = V.view(batch_size, -1, self.n_heads, self.head_dim).permute(0, 2, 1, 3)
-        
-        #Q = [batch size, n heads, query len, head dim]
-        #K = [batch size, n heads, key len, head dim]
-        #V = [batch size, n heads, value len, head dim]
                 
         energy = torch.matmul(Q, K.permute(0, 1, 3, 2)) / self.scale
-        
-        #energy = [batch size, n heads, query len, key len]
-        
+
         if mask is not None:
             energy = energy.masked_fill(mask == 0, -1e10)
         
         attention = torch.softmax(energy, dim = -1)
-                
-        #attention = [batch size, n heads, query len, key len]
-                
         x = torch.matmul(self.dropout(attention), V)
-        
-        #x = [batch size, n heads, query len, head dim]
-        
         x = x.permute(0, 2, 1, 3).contiguous()
-        
-        #x = [batch size, query len, n heads, head dim]
-        
-        x = x.view(batch_size, -1, self.hid_dim)
-        
-        #x = [batch size, query len, hid dim]
-        
+        x = x.view(batch_size, -1, self.hid_dim)   
         x = self.fc_o(x)
-        
-        #x = [batch size, query len, hid dim]
-        
-        return x, attention
 
+        return x, attention
+        
+        #energy = [batch size, n heads, query len, key len]
+        #attention = [batch size, n heads, query len, key len]
+        #x = [batch size, n heads, query len, head dim]
+        #x = [batch size, query len, n heads, head dim]      
+        #x = [batch size, query len, hid dim] 
+        #x = [batch size, query len, hid dim] 
+        
 
 class PositionwiseFeedforwardLayer(nn.Module):
     def __init__(self, hid_dim, pf_dim, dropout):
@@ -231,21 +199,13 @@ class PositionwiseFeedforwardLayer(nn.Module):
         
         self.fc_1 = nn.Linear(hid_dim, pf_dim)
         self.fc_2 = nn.Linear(pf_dim, hid_dim)
-        
         self.dropout = nn.Dropout(dropout)
         
-    def forward(self, x):
-        
-        #x = [batch size, seq len, hid dim]
-        
-        x = self.dropout(torch.relu(self.fc_1(x)))
-        
-        #x = [batch size, seq len, pf dim]
-        
+    def forward(self, x):       
+
+        x = self.dropout(torch.relu(self.fc_1(x)))        
         x = self.fc_2(x)
-        
-        #x = [batch size, seq len, hid dim]
-        
+
         return x
 
 
@@ -329,35 +289,20 @@ class DecoderLayer(nn.Module):
         
     def forward(self, trg, enc_src, trg_mask, src_mask):
         
-        #trg = [batch size, trg len, hid dim]
-        #enc_src = [batch size, src len, hid dim]
-        #trg_mask = [batch size, trg len]
-        #src_mask = [batch size, src len]
-        
         #self attention
         _trg, _ = self.self_attention(trg, trg, trg, trg_mask)
-        
         #dropout, residual connection and layer norm
         trg = self.layer_norm(trg + self.dropout(_trg))
-            
-        #trg = [batch size, trg len, hid dim]
             
         #encoder attention
         _trg, attention = self.encoder_attention(trg, enc_src, enc_src, src_mask)
-        
         #dropout, residual connection and layer norm
         trg = self.layer_norm(trg + self.dropout(_trg))
                     
-        #trg = [batch size, trg len, hid dim]
-        
         #positionwise feedforward
         _trg = self.positionwise_feedforward(trg)
-        
         #dropout, residual and layer norm
         trg = self.layer_norm(trg + self.dropout(_trg))
-        
-        #trg = [batch size, trg len, hid dim]
-        #attention = [batch size, n heads, trg len, src len]
         
         return trg, attention
 
@@ -475,15 +420,14 @@ def initialize_weights(m):
         nn.init.xavier_uniform_(m.weight.data)
 
 model.apply(initialize_weights);
+
 LEARNING_RATE = 0.0005
 optimizer = torch.optim.Adam(model.parameters(), lr = LEARNING_RATE)
 criterion = nn.CrossEntropyLoss(ignore_index = TRG_PAD_IDX)
 
-
 def train(model, iterator, optimizer, criterion, clip):
     
     model.train()
-    
     epoch_loss = 0
     
     for i, batch in enumerate(iterator):
@@ -492,26 +436,14 @@ def train(model, iterator, optimizer, criterion, clip):
         trg = batch.trg
         
         optimizer.zero_grad()
-        
         output, _ = model(src, trg[:,:-1])
-                
-        #output = [batch size, trg len - 1, output dim]
-        #trg = [batch size, trg len]
-            
         output_dim = output.shape[-1]
-            
         output = output.contiguous().view(-1, output_dim)
         trg = trg[:,1:].contiguous().view(-1)
                 
-        #output = [batch size * trg len - 1, output dim]
-        #trg = [batch size * trg len - 1]
-            
         loss = criterion(output, trg)
-        
         loss.backward()
-        
         torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
-        
         optimizer.step()
         
         epoch_loss += loss.item()
@@ -522,7 +454,6 @@ def train(model, iterator, optimizer, criterion, clip):
 def evaluate(model, iterator, criterion):
     
     model.eval()
-    
     epoch_loss = 0
     
     with torch.no_grad():
@@ -533,17 +464,9 @@ def evaluate(model, iterator, criterion):
             trg = batch.trg
 
             output, _ = model(src, trg[:,:-1])
-            
-            #output = [batch size, trg len - 1, output dim]
-            #trg = [batch size, trg len]
-            
             output_dim = output.shape[-1]
-            
             output = output.contiguous().view(-1, output_dim)
             trg = trg[:,1:].contiguous().view(-1)
-            
-            #output = [batch size * trg len - 1, output dim]
-            #trg = [batch size * trg len - 1]
             
             loss = criterion(output, trg)
 
@@ -558,10 +481,8 @@ def epoch_time(start_time, end_time):
     elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
     return elapsed_mins, elapsed_secs
 
-
 N_EPOCHS = 10
 CLIP = 1
-
 best_valid_loss = float('inf')
 
 for epoch in range(N_EPOCHS):
@@ -584,7 +505,6 @@ for epoch in range(N_EPOCHS):
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
 
 model.load_state_dict(torch.load('transformer.pt'))
-
 test_loss = evaluate(model, test_iterator, criterion)
 
 print(f'| Test Loss: {test_loss:.3f} | Test PPL: {math.exp(test_loss):7.3f} |')
@@ -601,11 +521,8 @@ def translate_sentence(sentence, src_field, trg_field, model, device, max_len = 
         tokens = [token.lower() for token in sentence]
 
     tokens = [src_field.init_token] + tokens + [src_field.eos_token]
-        
     src_indexes = [src_field.vocab.stoi[token] for token in tokens]
-
-    src_tensor = torch.LongTensor(src_indexes).unsqueeze(0).to(device)
-    
+    src_tensor = torch.LongTensor(src_indexes).unsqueeze(0).to(device)   
     src_mask = model.make_src_mask(src_tensor)
     
     with torch.no_grad():
@@ -616,14 +533,12 @@ def translate_sentence(sentence, src_field, trg_field, model, device, max_len = 
     for i in range(max_len):
 
         trg_tensor = torch.LongTensor(trg_indexes).unsqueeze(0).to(device)
-
         trg_mask = model.make_trg_mask(trg_tensor)
         
         with torch.no_grad():
             output, attention = model.decoder(trg_tensor, enc_src, trg_mask, src_mask)
         
         pred_token = output.argmax(2)[:,-1].item()
-        
         trg_indexes.append(pred_token)
 
         if pred_token == trg_field.vocab.stoi[trg_field.eos_token]:

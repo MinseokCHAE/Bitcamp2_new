@@ -1,0 +1,107 @@
+1. 안녕하십니까 attention is all you need 논문리뷰 발표자 채민석 입니다.
+발표 시작하겠습니다.
+
+2. 발표순서입니다. 
+먼저 논문에 대한 소개 이후 모델의 구조 설명하겠습니다.
+이후 논문의 성과를 알아본뒤 코드로 논문 내용 구현한 과정 말씀드리겠습니다.
+
+3. 논문소개 입니다. 
+attention is all you need 는 구글 브레인,리서치팀에서 2017년 12월 6일에 발표한 neural machine translation 관련 논문입니다.
+
+4. 이 논문에서 저자들은 rnn 이나 cnn을 사용하지않고 attention 만을 사용하여 기계번역분야, 특히 영어-독일어 번역에서 좋은 성능을 얻었다고 밝혔습니다.
+
+5. 논문의 목적은 간단하게 두가지로 정리할수있습니다.
+RNN의 high computing cost를 절감하고 CNN의 long-range dependency문제를 해결한다 입니다. 두 목표를 달성한 모델 아키텍쳐를 저자들은 transformer라고 명명했습니다.
+
+6. 모델구조입니다
+transformer는 기본적으로 encoder - decoder 구조를 가지고 있습니다.
+
+왼쪽부분의 encoder는 6개의 동일한 layer가 반복되는데 
+각각의 layer는 multi-head attention과 feed forward network, 그리고 sub-layer2개로 구성되어 있습니다.
+** feed forward network 질문시
+걍 fully connected layer랑 똑같은거임
+
+7. 오른쪽부분 decoder는 encoder와 유사한데 multi-head attention 이 한개 더 들어가 있습니다. decoder에 추가적으로 붙인 attetion 은 decoder 에서 encoder로의 attention 입니다.
+** mask 질문시(추가 attention)
+decoder : auto-regressive 속성을 보존하기 위해 디코더는 출력을 생성할 시 다음 출력을 고려해서는 안됨.
+->마스크(-무한대)를 씌움. 각각의 단어가 앞부분의 단어만 사용
+->즉, Encoder 구조 + 뒤에 오는 단어를 미리 알지 못하게(앞에 있는, 아는 단어로만 예측했다고 확실히 하기 위해서) masking한 attention layer
+
+8. multi head attention설명 전에 먼저 기본 attention부터 알아보겠습니다.
+attention에는 query, key, value가 있습니다.
+I love you 라는 예시를 들겠습니다.
+query는 값을 구하고자 하는 단어 i
+key는 해당문장의 모든 단어 i love you
+value는 말그대로 값 0.3, 0.2, 0.1 입니다.
+attention에서는
+query와 key의 곱 연산(matmul) -> 정규화(scale) -> 원하는부분연산(mask) -> 확률화(softmax) -> value와 곱연산(matmul) 의 과정을 진행합니다.
+이를 수식으로 나타내면 Q,K,V에 대하여 Attention 함수는 ~
+
+9. 이러한 개별 attention의 헤드들을 이어붙이고 concat을 통해 차원을 갖게 만든것이 바로 이 논문의 핵심인 multi-head attention 입니다.
+
+10. 논문의 성과 입니다.
+구글 브레인 팀에서는 왜 attention mechanism에 집중했을까?
+보통은 단어의 수보다 차원값이 더 크기때문에 computational complexity, 연산 복잡도 측면에서 attention이 더 유리합니다. 이를통해 training cost를 사분의일 미만으로 줄일수 있었습니다.
+또한 이 maximum path length는 의존성을 학습하기 위해 거쳐야 하는 connection의 필요단계수를 나타내는 수치인데 모든 position 간에 attention을 줌으로써 Maximum path length를 1로 낮춰 dependency 문제를 해결하였습니다. 
+이전슬라이드 논문 소개단계에서 말씀드린 RNN의 High Computing Cost절감, CNN의 Long-Range Dependency해결을 모두 달성한것입니다.
+** n<d 왜? 그냥 대부분의경우에 그렇다는데 논문에서
+
+11. 또한 해석가능한 모델을 만들기 위해 attention을 사용합니다.
+실제로 문장이 들어왔을때 attention이 어떤값을 가지는지 시각화한 내용입니다. 
+왼쪽 그림에서는 making이라는 단어가 more이나 difficult에 attention을 많이 두는데 이를 통해 making sth more difficult 라는 구절을 확인할수 있고
+오른쪽 그림에서는 its가 높은 확률로 지칭하는 것이 law나 application이라는 문장내 관계를 발견하는데에도 쓰일수 있습니다.
+
+12. 수치적으로는 BLEU score, 기계번역결과와 사람이 직접 번역한 결과가 얼마나 유사한지 비교하는 측정방식에서 기존의 모델들보다 점수가 높고, 사용한 컴퓨팅 자원또한 적다는 성과를 거두었습니다.
+**Bilingual Evaluation Understudy Score
+데이터셋은 WMT 2014 en-ge(4.5M개 문장쌍), en-fr(36M개 문장쌍)사용
+
+13. 그럼 이제 논문 내용을 코드로 구현한 과정 보여드리겠습니다. 먼저 데이터셋은 Multi30k 라는 2018년도 Codalab competition 영어-독일어 테스트셋을 사용하였습니다.
+기본 requirements들을 설치합니다.
+tokenizer 함수를 정의하여 문장을 토큰화합니다.
+그 외 여러 준비단계를 거칩니다.
+
+14. 인코더 layer 클래스 입니다.
+하나의 layer를 구성하는 3가지요소 sub-layer, multi-head attention, feed forward layer를 정의합니다.
+이때 sub layer는 nn.LayerNorm이라는 함수를 사용하고 나머지 두개는 직접 클래스로 정의할예정입니다.
+오른쪽은 attention과 feed forward에 대한 2개의 sub layer를 코딩한 부분입니다.
+
+15. Multi head attention 클래스입니다.
+기본적인 파라미터들을 설정하고
+오른쪽에 query key value 에 대한 정의가 들어갑니다.
+이후 개별 attention의 과정이었던 query와 key 곱연산, 정규화, 추가선택연산이었던 마스킹, 소프트맥스로 확률화, 다시 그 확률화한 어텐션과 value의 곱연산을 진행합니다.
+
+16. feed forward layer 클래스입니다.
+fully connected 와 같은 기능이라고 보시면 됩니다.
+
+17. 디코더 layer 클래스 입니다.
+transformer model의 architecture 구조설명에서처럼 인코더에서 multi head attention이 한개 더 추가됩니다. 또한 오른쪽은 추가된 attention 에 대한 sub layer입니다.
+디코더에 들어가는 multi head attention과 feed forward layer는 앞서 인코더부분에서 클래스로 이미 정의했었기 때문에 디코더에서는 중복으로 만들지 않았습니다.
+
+18. 앞서 정의했던 파라미터들에 값을 지정해주고 trainable parameter의 갯수를 파악하는 함수와 그 출력결과입니다. 총 900만여개의 트레이너블 파라미터가 있음을 확인할수 있습니다.
+
+19. learning rate를 지정해주고 훈련과 평가를 하는 함수입니다. 로스값은 다음과 같이 nn.crossentropy로 측정합니다.
+
+20. 에포 횟수를 지정한뒤 훈련을 진행하는 과정과 그 출력 결과 입니다. best valid loss를 저장한뒤 test loss를 구하는 과정에 그 best point를 적용합니다.
+
+21. 훈련이후 predict에 해당하는 translate_sentence 함수입니다. 임의의 인덱스 넘버로 데이터셋에서 샘플을 3개 추출한뒤 독일어로된 원본, 사람이 직접 영어로 번역한 내용, 훈련을 통해 예측한 번역결과 순으로 출력하겠습니다.
+
+22. 첫번째 결과입니다.
+독일어 읽고 영어 단어 하나씩 비교
+관사 dem, 어순 hinterher 언급
+예측문장에는 is 가 누락되어있습니다.
+
+23. 두번째 결과입니다.
+독일어 읽고 영어 단어 하나씩 비교
+예측문장에는 young과 outside가 누락되어 있습니다.
+
+24. 세번째 결과입니다.
+by와 past로 번역한 차이 정도가 있습니다.
+
+25. 마지막으로 BLEU 스코어를 측정한 결과입니다.
+35.48점으로 MADL, multi agent dual learning 모델을 제외하고는 가장 높은 점수입니다.
+** https://paperswithcode.com/sota/machine-translation-on-wmt2016-english-german
+
+26. 이번 발표에 참고한 문헌 출처입니다.
+
+27. 질문
+
