@@ -654,5 +654,5 @@ def calculate_bleu(data, src_field, trg_field, model, device, max_len = 50):
 bleu_score = calculate_bleu(test_data, SRC, TRG, model, device)
 
 print(f'BLEU score = {bleu_score*100:.2f}')
-# BLEU score = 35.48
+# BLEU score = 35.480
 
