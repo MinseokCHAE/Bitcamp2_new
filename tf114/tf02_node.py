@@ -11,6 +11,7 @@ division = tf.divide(node1, node2)
 print(addition)
 # Tensor("Add:0", shape=(), dtype=float32)
 
+######
 session = tf.Session()
 print(session.run(addition))
 print(session.run(subtraction))
