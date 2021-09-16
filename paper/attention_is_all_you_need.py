@@ -249,24 +249,14 @@ class Decoder(nn.Module):
         batch_size = trg.shape[0]
         trg_len = trg.shape[1]
         
-        pos = torch.arange(0, trg_len).unsqueeze(0).repeat(batch_size, 1).to(self.device)
-                            
-        #pos = [batch size, trg len]
-            
+        pos = torch.arange(0, trg_len).unsqueeze(0).repeat(batch_size, 1).to(self.device)                 
         trg = self.dropout((self.tok_embedding(trg) * self.scale) + self.pos_embedding(pos))
                 
-        #trg = [batch size, trg len, hid dim]
-        
         for layer in self.layers:
             trg, attention = layer(trg, enc_src, trg_mask, src_mask)
         
-        #trg = [batch size, trg len, hid dim]
-        #attention = [batch size, n heads, trg len, src len]
-        
         output = self.fc_out(trg)
         
-        #output = [batch size, trg len, output dim]
-            
         return output, attention
 
 
