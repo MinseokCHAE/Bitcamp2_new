@@ -241,11 +241,6 @@ class Decoder(nn.Module):
         
     def forward(self, trg, enc_src, trg_mask, src_mask):
         
-        #trg = [batch size, trg len]
-        #enc_src = [batch size, src len, hid dim]
-        #trg_mask = [batch size, trg len]
-        #src_mask = [batch size, src len]
-                
         batch_size = trg.shape[0]
         trg_len = trg.shape[1]
         
