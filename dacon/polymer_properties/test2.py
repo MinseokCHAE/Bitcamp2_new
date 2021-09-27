@@ -32,17 +32,17 @@ sample_img = cv2.imread(path + 'train_imgs/dev_0.png')
 
 
 device = torch.device("cuda:0")
-BATCH_SIZE = 128
-EPOCHS = 64
-num_layers = 3
+BATCH_SIZE = 64
+EPOCHS = 4
+num_layers = 1
 dropout_rate = 0.21
-embedding_dim = 128
-learning_rate = 5e-5
+embedding_dim = 64
+learning_rate = 5e-4
 vision_pretrain = True
 save_path = path + f'models/best_model.pt'
 
 '''
-128 / 64 / 3 / 0.21 / 128 / 5e-5 = 안돌아감
+64 8 1 0.21 128 5e-4 = 
 
 '''
 
@@ -123,8 +123,8 @@ class CustomDataset(Dataset):
 train_dataset = CustomDataset(train_imgs, train_seqs, train_labels)
 val_dataset = CustomDataset(val_imgs, val_seqs, val_labels)
 
-train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, num_workers=16, shuffle=True)
-val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=BATCH_SIZE, num_workers=16, shuffle=True)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, num_workers=0, shuffle=True)
+val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=BATCH_SIZE, num_workers=0, shuffle=True)
 
 sample_batch = next(iter(train_dataloader))
 
@@ -135,7 +135,7 @@ class CNN_Encoder(nn.Module):
         modules = list(model.children())[:-2]
         self.feature_extract_model = nn.Sequential(*modules)
         self.dropout1 = nn.Dropout(rate)
-        self.fc = nn.Linear(1024, embedding_dim)
+        self.fc = nn.Linear(2048, embedding_dim)
         self.dropout2 = nn.Dropout(rate)
         
     def forward(self, x):

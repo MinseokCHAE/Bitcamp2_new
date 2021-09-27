@@ -32,12 +32,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 def create_deep_learning_model():
     model = Sequential()
-    model.add(Dense(1024, input_dim=2048, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(1024, activation='relu'))
+    model.add(Dense(2048, input_dim=2048, kernel_initializer='he_normal', activation='relu'))
+    model.add(Dropout(0.39))
     model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.39))
     model.add(Dense(128, activation='relu'))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(1, kernel_initializer='normal'))
+    model.add(Dense(1, kernel_initializer='he_normal'))
     model.compile(loss='mean_absolute_error', optimizer='adam')
     return model
 
@@ -51,14 +51,14 @@ from sklearn.model_selection import KFold
 
 estimators = []
 # estimators.append(('standardize', StandardScaler()))
-estimators.append(('mlp', KerasRegressor(build_fn=create_deep_learning_model, epochs=21)))
+estimators.append(('mlp', KerasRegressor(build_fn=create_deep_learning_model, epochs=10)))
 pipeline = Pipeline(estimators)
-kfold = KFold(n_splits=4)
+kfold = KFold(n_splits=2)
 results = cross_val_score(pipeline, X, Y, cv=kfold)
 # print("%.2f (%.2f) MAE" % (results.mean(), results.std()))
 
 model = create_deep_learning_model()
-model.fit(X, Y, epochs = 21)
+model.fit(X, Y, epochs = 10)
 test_y = model.predict(np_test_fps_array)
 ss['ST1_GAP(eV)'] = test_y
 ss.to_csv("../_data/dacon/polymer_properties/rdkit.csv", index=False)
