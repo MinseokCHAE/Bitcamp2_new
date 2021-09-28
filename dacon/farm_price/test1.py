@@ -72,11 +72,12 @@ def at_nmae(pred, dataset):
 0.001 5 128 0.8 0.8 5 21 7 = 0.23015
 0.01 5 128 0.8 0.8 7 21 9 = 0.22934
 0.01 5 128 0.7 0.7 7 21 7 = 0.22652
+0.05 7 128 0.7 0.7 7 21 7 = 
 '''
 
 def model_train(x_train, y_train, x_valid, y_valid) :
-    params = {'learning_rate': 0.01, 
-              'max_depth': 5, 
+    params = {'learning_rate': 0.05, 
+              'max_depth': 7, 
               'boosting': 'gbdt', 
               'objective': 'regression',  
               'is_training_metric': True, 

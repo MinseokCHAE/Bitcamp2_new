@@ -30,7 +30,7 @@ train = pd.concat([train, dev])
 
 sample_img = cv2.imread(path + 'train_imgs/dev_0.png')
 
-
+'''
 device = torch.device("cuda:0")
 BATCH_SIZE = 64
 EPOCHS = 4
@@ -236,7 +236,7 @@ for epoch in range(EPOCHS):
     
     if np.min(val_loss_plot) == val_loss_plot[-1]:
         torch.save(model, save_path)
-
+'''
 model = torch.load(save_path)
 
 test = pd.read_csv(path + 'test.csv')
