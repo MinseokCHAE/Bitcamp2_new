@@ -75,22 +75,25 @@ def at_nmae(pred, dataset):
 0.05 7 128 0.7 0.7 7 21 7 = 0.22831
 0.021 3 128 0.7 0.7 7 21 7 = 0.22995
 0.01 3 128 0.7 0.7 7 21 7 = 0.22536
+0.01 2 128 0.7 0.7 7 21 7 = 0.22979
+0.01 3 128 0.5 0.5 5 21 5 = 0.23142
+0.01 3 128 0.6 0.6 
 
 이상태로 depth만 계속 줄여보고,  그다음 타겟은 num_threads
 '''
 
 def model_train(x_train, y_train, x_valid, y_valid) :
     params = {'learning_rate': 0.01, 
-              'max_depth': 2, 
+              'max_depth': 3, 
               'boosting': 'gbdt', 
               'objective': 'regression',  
               'is_training_metric': True, 
               'num_leaves': 128, 
-              'feature_fraction': 0.7, 
-              'bagging_fraction': 0.7, 
-              'bagging_freq': 7, 
+              'feature_fraction': 0.6, 
+              'bagging_fraction': 0.6, 
+              'bagging_freq': 6, 
               'seed':21,
-              'num_threads':7
+              'num_threads': 7
              }
 
     model = lightgbm.train(params, 
