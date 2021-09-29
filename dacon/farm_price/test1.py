@@ -77,9 +77,9 @@ def at_nmae(pred, dataset):
 0.01 3 128 0.7 0.7 7 21 7 = 0.22536
 0.01 2 128 0.7 0.7 7 21 7 = 0.22979
 0.01 3 128 0.5 0.5 5 21 5 = 0.23142
-0.01 3 128 0.6 0.6 6 21 7 = 
+0.01 3 128 0.6 0.6 6 21 7 = 0.22743
 
-이상태로 depth만 계속 줄여보고,  그다음 타겟은 num_threads
+fraction, frequency 조절
 '''
 
 def model_train(x_train, y_train, x_valid, y_valid) :
