@@ -89,9 +89,9 @@ def model_train(x_train, y_train, x_valid, y_valid) :
               'objective': 'regression',  
               'is_training_metric': True, 
               'num_leaves': 128, 
-              'feature_fraction': 0.6, 
-              'bagging_fraction': 0.6, 
-              'bagging_freq': 6, 
+              'feature_fraction': 0.8, 
+              'bagging_fraction': 0.8, 
+              'bagging_freq': 8, 
               'seed':21,
               'num_threads': 7
              }
