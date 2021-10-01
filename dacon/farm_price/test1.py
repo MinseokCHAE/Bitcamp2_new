@@ -91,7 +91,7 @@ fraction, frequency 조절
 
 def model_train(x_train, y_train, x_valid, y_valid) :
     params = {'learning_rate': 0.01, 
-              'max_depth': 3, 
+              'max_depth': 2, 
               'boosting': 'gbdt', 
               'objective': 'regression',  
               'is_training_metric': True, 
