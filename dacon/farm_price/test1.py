@@ -81,6 +81,7 @@ def at_nmae(pred, dataset):
 0.01 3 128 0.8 0.8 8 21 7 = 0.22731
 0.01 2 128 0.8 0.8 8 21 7 = 0.23532
 0.01 4 128 0.8 0.8 8 21 7 = 0.22919
+0.01 3 128 0.7 0.7 8 21 7 = 0.22919
 
 lr, depth, threads 고정
 fraction, frequency 조절
@@ -93,8 +94,8 @@ def model_train(x_train, y_train, x_valid, y_valid) :
               'objective': 'regression',  
               'is_training_metric': True, 
               'num_leaves': 128, 
-              'feature_fraction': 0.8, 
-              'bagging_fraction': 0.8, 
+              'feature_fraction': 0.7, 
+              'bagging_fraction': 0.7, 
               'bagging_freq': 8, 
               'seed':21,
               'num_threads': 7
