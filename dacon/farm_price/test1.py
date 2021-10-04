@@ -85,7 +85,7 @@ def at_nmae(pred, dataset):
 0.01 3 128 0.7 0.7 9 21 7 = 0.22618
 0.01 3 128 0.7 0.7 6 21 7 = 0.22654
 
-lr, depth, threads 고정
+lr0.01, depth3, threads7 고정
 fraction, frequency 조절
 '''
 
